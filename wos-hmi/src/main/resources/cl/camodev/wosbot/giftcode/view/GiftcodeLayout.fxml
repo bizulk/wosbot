@@ -3,41 +3,46 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="550.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<VBox styleClass="giftcode-root" stylesheets="@giftcode.css" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="550.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
             <content>
-                <VBox spacing="14" style="-fx-background-color: #1f1f1f; -fx-background-radius: 8; -fx-padding: 18;" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                <VBox spacing="14" style="-fx-padding: 18;" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                     <children>
-                        <!-- Gift Codes Section -->
-                        <VBox spacing="0" style="-fx-background-color: #242424; -fx-background-radius: 8;">
+                        <!-- Gift Codes Card -->
+                        <VBox spacing="0" styleClass="giftcode-card">
                             <children>
-                                <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" style="-fx-background-color: linear-gradient(#e74c3c, #c0392b); -fx-background-radius: 8 8 0 0; -fx-padding: 8 12;">
+                                <!-- Header -->
+                                <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" styleClass="giftcode-card-header">
                                     <children>
-                                        <Label style="-fx-font-weight: bold; -fx-text-fill: #ffffff;" text="Gift Codes" />
+                                        <Label text="Gift Codes" />
                                     </children>
                                 </HBox>
-                                <VBox spacing="10" style="-fx-padding: 12;">
+                                <!-- Body -->
+                                <VBox spacing="12" styleClass="giftcode-card-body">
                                     <children>
-                                        <Label style="-fx-font-size: 10px; -fx-text-fill: #b5b5b5;" text="Fetch the latest available gift codes from the server." wrapText="true" />
+                                        <Label styleClass="giftcode-description" text="Fetch the latest available gift codes from the server. Click the copy button next to any code to copy it to your clipboard." wrapText="true" />
 
-                                        <Separator style="-fx-opacity: 0.3; -fx-padding: 4 0;" />
+                                        <Separator styleClass="giftcode-separator" />
 
+                                        <!-- Controls row -->
                                         <HBox spacing="10" alignment="CENTER_LEFT">
                                             <children>
-                                                <Button fx:id="buttonFetch" mnemonicParsing="false" onAction="#handleFetch" prefHeight="30.0" prefWidth="120.0" text="Fetch" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
-                                                <Label fx:id="labelStatus" style="-fx-text-fill: #b5b5b5;" text="Click Fetch to load gift codes." />
+                                                <Button fx:id="buttonFetch" mnemonicParsing="false" onAction="#handleFetch" styleClass="giftcode-fetch-btn" text="Fetch Codes" />
+                                                <Button fx:id="buttonCopyAll" mnemonicParsing="false" onAction="#handleCopyAll" styleClass="giftcode-copy-all-btn" text="Copy All" visible="false" managed="false" />
+                                                <Region HBox.hgrow="ALWAYS" />
+                                                <Label fx:id="labelStatus" styleClass="giftcode-status" text="Click 'Fetch Codes' to load gift codes." />
                                             </children>
                                         </HBox>
 
-                                        <Separator style="-fx-opacity: 0.3; -fx-padding: 4 0;" />
+                                        <Separator styleClass="giftcode-separator" />
 
-                                        <TableView fx:id="tableGiftcodes" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS" prefHeight="400.0" style="-fx-background-color: #2a2a2a;">
-                                            <columns>
-                                                <TableColumn fx:id="columnCode" text="Gift Code" prefWidth="280" />
-                                                <TableColumn fx:id="columnDate" text="Date" prefWidth="120" />
-                                            </columns>
-                                        </TableView>
+                                        <!-- Gift code list container -->
+                                        <VBox fx:id="giftcodeListContainer" spacing="6" VBox.vgrow="ALWAYS">
+                                            <children>
+                                                <Label styleClass="giftcode-placeholder" text="No gift codes loaded yet." />
+                                            </children>
+                                        </VBox>
                                     </children>
                                 </VBox>
                             </children>
