@@ -292,6 +292,7 @@ public class GatherTask extends DelayedTask {
                 SearchConfig.builder()
                         .withArea(new DTOArea(MARCH_QUEUES[0].topLeft, limit))
                         .withMaxAttempts(3)
+                        .withMaxResults(activeQueues)
                         .withDelay(3).build());
 
         List<ActiveMarchResult> marchResults = new ArrayList<>();
@@ -490,7 +491,6 @@ public class GatherTask extends DelayedTask {
     }
 
     private boolean retryLater() {
-        updateReschedule(LocalDateTime.now().plusMinutes(5));
         tapBackButton(); // Safety back
         return false;
     }
