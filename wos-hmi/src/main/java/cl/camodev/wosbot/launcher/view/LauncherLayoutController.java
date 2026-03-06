@@ -55,6 +55,7 @@ import cl.camodev.wosbot.shop.view.ShopLayoutController;
 import cl.camodev.wosbot.taskmanager.view.TaskManagerLayoutController;
 import cl.camodev.wosbot.skiptutorial.view.SkipTutorialLayoutController;
 import cl.camodev.wosbot.training.view.TrainingLayoutController;
+import cl.camodev.wosbot.research.view.ResearchLayoutController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -139,10 +140,11 @@ public class LauncherLayoutController implements IProfileLoadListener, IStaminaC
 
     private void initializeTelegramBot() {
         HashMap<String, String> cfg = ServConfig.getServices().getGlobalConfig();
-        if (cfg == null) return;
+        if (cfg == null)
+            return;
         boolean enabled = Boolean.parseBoolean(
                 cfg.getOrDefault(EnumConfigurationKey.TELEGRAM_BOT_ENABLED_BOOL.name(), "false"));
-        String token     = cfg.getOrDefault(EnumConfigurationKey.TELEGRAM_BOT_TOKEN_STRING.name(), "");
+        String token = cfg.getOrDefault(EnumConfigurationKey.TELEGRAM_BOT_TOKEN_STRING.name(), "");
         String chatIdStr = cfg.getOrDefault(EnumConfigurationKey.TELEGRAM_ALLOWED_CHAT_ID_STRING.name(), "");
         if (enabled && !token.isBlank()) {
             long chatId = chatIdStr.isBlank() ? 0L : Long.parseLong(chatIdStr);
@@ -434,6 +436,7 @@ public class LauncherLayoutController implements IProfileLoadListener, IStaminaC
                 new ModuleDefinition("BeastHuntingLayout", "Beast Hunting", BeastHuntingLayoutController::new),
 				new ModuleDefinition("FishingLayout", "Fishing Tournament", FishingLayoutController::new),
 				new ModuleDefinition("TrainingLayout", "Training", TrainingLayoutController::new),
+				new ModuleDefinition("ResearchLayout", "Research", ResearchLayoutController::new),
 				new ModuleDefinition("PetsLayout", "Pets", PetsLayoutController::new),
 				new ModuleDefinition("EventsLayout", "Events", EventsLayoutController::new),
 				new ModuleDefinition("ExpertsLayout", "Experts", ExpertsLayoutController::new),

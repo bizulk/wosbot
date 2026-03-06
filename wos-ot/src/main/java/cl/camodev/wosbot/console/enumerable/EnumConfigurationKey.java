@@ -38,6 +38,7 @@ public enum EnumConfigurationKey {
 	CITY_UPGRADE_PRIORITISE_FURNACE_BOOL("false", Boolean.class),
 	CITY_ACCEPT_NEW_SURVIVORS_BOOL("false", Boolean.class),
 	CITY_ACCEPT_NEW_SURVIVORS_OFFSET_INT("60", Integer.class),
+	RESEARCH_ENABLED_BOOL("false", Boolean.class),
 	
     // ========================================================================
     // RESOURCE GATHERING AND MANAGEMENT

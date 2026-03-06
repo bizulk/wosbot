@@ -46,6 +46,7 @@ public enum TpDailyTaskEnum {
 	CITY_UPGRADE_FURNACE(70, "City Upgrade Furnace", EnumConfigurationKey.CITY_UPGRADE_FURNACE_BOOL),
 	CITY_UPGRADE_PRIORITISE_FURNACE(72, "Prioritise Furnace", EnumConfigurationKey.CITY_UPGRADE_PRIORITISE_FURNACE_BOOL),
 	CITY_SURVIVORS(71, "City Survivors", EnumConfigurationKey.CITY_ACCEPT_NEW_SURVIVORS_BOOL),
+	RESEARCH(73, "Research", EnumConfigurationKey.RESEARCH_ENABLED_BOOL),
 
 	SHOP_MYSTERY(80, "Shop Mystery",              EnumConfigurationKey.BOOL_MYSTERY_SHOP),
 

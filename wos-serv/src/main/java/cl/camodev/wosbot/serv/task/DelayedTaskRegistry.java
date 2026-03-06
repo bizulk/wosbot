@@ -118,6 +118,8 @@ public class DelayedTaskRegistry {
                 registry.put(TpDailyTaskEnum.ARENA, profile -> new ArenaTask(profile, TpDailyTaskEnum.ARENA));
                 registry.put(TpDailyTaskEnum.CITY_SURVIVORS,
                                 profile -> new NewSurvivorsTask(profile, TpDailyTaskEnum.CITY_SURVIVORS));
+                registry.put(TpDailyTaskEnum.RESEARCH,
+                                profile -> new ResearchTask(profile, TpDailyTaskEnum.RESEARCH));
 
                 // Events
                 registry.put(TpDailyTaskEnum.EVENT_TUNDRA_TRUCK,
