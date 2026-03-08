@@ -28,3 +28,6 @@ log/bot.log
 .vscode/settings.json
 /log
 /temp
+
+# Ignore Maven build output
+**/target/

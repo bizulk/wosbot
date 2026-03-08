@@ -38,6 +38,25 @@
 
     <build>
         <plugins>
+            <!-- Skip install and deploy for this standalone executable JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <!-- Version matches parent or standard, using 3.1.4 as seen in build logs -->
+                <version>3.1.4</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
             <!-- Allow clean to succeed even if the fat JAR is locked by a running process -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
