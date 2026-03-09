@@ -1,3 +1,23 @@
+<#
+.SYNOPSIS
+    Starts the WOS bot JAR, waits for completion or timeout, and performs process cleanup.
+
+.DESCRIPTION
+    This script resolves the latest bot JAR by wildcard pattern, stops leftover bot Java processes,
+    starts a fresh bot instance, waits for a configurable amount of time, and then force-stops the
+    bot process tree. It also stops the configured VM/emulator process to allow the host system to
+    return to standby.
+
+.PARAMETER JarPattern
+    Wildcard pattern used to locate the bot JAR under the script directory.
+
+.PARAMETER VmProcessName
+    Name of the VM/emulator host process to terminate during cleanup.
+
+.PARAMETER TimeoutSec
+    Maximum number of seconds to wait for the bot process before cleanup is forced.
+#>
+
 param(
     [string]$JarPattern = "wos-bot-*.jar",
     [string]$VmProcessName = "MuMuNxMain",
@@ -10,6 +30,13 @@ Set-Location $PSScriptRoot
 
 $logFile = Join-Path $PSScriptRoot "launch.log"
 
+<#
+.SYNOPSIS
+    Writes a timestamped log entry to the script log file.
+
+.PARAMETER Message
+    Text message to append to the log.
+#>
 function Write-Log {
     param(
         [string]$Message
@@ -19,6 +46,13 @@ function Write-Log {
     Add-Content -Path $logFile -Value "[$timestamp] $Message"
 }
 
+<#
+.SYNOPSIS
+    Terminates a process and all child processes by PID.
+
+.PARAMETER ProcessId
+    Target process identifier whose full process tree should be stopped.
+#>
 function Stop-ProcessTreeByPid {
     param(
         [int]$ProcessId
@@ -34,6 +68,19 @@ function Stop-ProcessTreeByPid {
     }
 }
 
+<#
+.SYNOPSIS
+    Resolves the bot JAR file from a search root and wildcard pattern.
+
+.DESCRIPTION
+    Searches recursively and returns the most recently modified matching JAR file.
+
+.PARAMETER SearchRoot
+    Root directory to search.
+
+.PARAMETER Pattern
+    Wildcard pattern used to match candidate JAR files.
+#>
 function Resolve-BotJar {
     param(
         [string]$SearchRoot,
