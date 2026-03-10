@@ -287,6 +287,7 @@ public enum EnumConfigurationKey {
     TEST_GATHER_DEPLOY_PREEMPTION_BOOL("false", Boolean.class),
     DUMMY_TASK_ENABLED_BOOL("false", Boolean.class),
     DUMMY_TASK_PRIORITY_INT("100", Integer.class),
+    SKIP_TUTORIAL_ENABLED_BOOL("false", Boolean.class),
     FISHING_MINIGAME_ENABLED_BOOL("false", Boolean.class),
     TEST_HOOK_LOOP_ENABLED_BOOL("false", Boolean.class),
     KEEP_EMULATOR_OPEN_BOOL("false", Boolean.class);

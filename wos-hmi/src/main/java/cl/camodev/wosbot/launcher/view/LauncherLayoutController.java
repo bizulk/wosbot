@@ -53,6 +53,7 @@ import cl.camodev.wosbot.serv.impl.ServScheduler;
 import cl.camodev.wosbot.serv.impl.StaminaService;
 import cl.camodev.wosbot.shop.view.ShopLayoutController;
 import cl.camodev.wosbot.taskmanager.view.TaskManagerLayoutController;
+import cl.camodev.wosbot.skiptutorial.view.SkipTutorialLayoutController;
 import cl.camodev.wosbot.training.view.TrainingLayoutController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -440,7 +441,8 @@ public class LauncherLayoutController implements IProfileLoadListener, IStaminaC
 				new ModuleDefinition("GiftcodeLayout", "Get Giftcodes", GiftcodeLayoutController::new),
 				new ModuleDefinition("DebuggingLayout", "Debugging", DebuggingLayoutController::new),
 				new ModuleDefinition("EmuConfigLayout", "Config", EmuConfigLayoutController::new),
-				new ModuleDefinition("TelegramLayout", "Telegram", TelegramLayoutController::new)
+				new ModuleDefinition("TelegramLayout", "Telegram", TelegramLayoutController::new),
+				new ModuleDefinition("SkipTutorialLayout", "Skip Tutorial", SkipTutorialLayoutController::new)
 				);
 		//@formatter:on
 

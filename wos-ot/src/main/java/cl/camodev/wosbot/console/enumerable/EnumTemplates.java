@@ -508,7 +508,10 @@ public enum EnumTemplates {
 	GAME_PROFILE_SETTINGS_CHARACTER_FURNACE_LEVEL_INACTIVE("/templates/profile/settings/switchcharacter/furnaceLevelInactive.png"),  // Furnace Level icon template for finding characters (PLACEHOLDER - replace with actual template)
 	GAME_PROFILE_SETTINGS_CHARACTER_ACTIVE_CHECKMARK("/templates/profile/settings/switchcharacter/activeCharacterCheckMark.png"),  // Green checkmark icon indicating active character (PLACEHOLDER - replace with actual template)
 	GAME_PROFILE_SETTINGS_SWITCH_CHARACTER_CONFIRM_BUTTON("/templates/profile/settings/switchcharacter/confirmButton.png"),  // Confirm button in character switch confirmation dialog (PLACEHOLDER - replace with actual template)
-	GAME_PROFILE_SETTINGS_SWITCH_CHARACTER_CANCEL_BUTTON("/templates/profile/settings/switchcharacter/cancelButton.png");  // Cancel button in character switch confirmation dialog (PLACEHOLDER - replace with actual template)
+	GAME_PROFILE_SETTINGS_SWITCH_CHARACTER_CANCEL_BUTTON("/templates/profile/settings/switchcharacter/cancelButton.png"),  // Cancel button in character switch confirmation dialog (PLACEHOLDER - replace with actual template)
+
+	SKIP_TUTORIAL_HAND("/templates/skip/hand.png");
+
 
 	// @formatter:on
 	private final String template;
