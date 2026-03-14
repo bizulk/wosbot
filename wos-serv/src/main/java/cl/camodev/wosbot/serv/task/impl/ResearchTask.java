@@ -136,6 +136,7 @@ public class ResearchTask extends DelayedTask {
                             handPoint.getY() + HAND_CLICK_OFFSET_Y);
                 }
                 tapPoint(adjustedPoint);
+                sleepTask(1000);
             }
         }
 
