@@ -296,6 +296,7 @@ public enum EnumConfigurationKey {
     FISHING_MINIGAME_ENABLED_BOOL("false", Boolean.class),
     CREATE_CHARACTER_ENABLED_BOOL("false", Boolean.class),
     CREATE_CHARACTER_MAX_AGE_MINUTES_INT("17", Integer.class),
+    CREATE_CHARACTER_SKIP_TUTORIAL_BOOL("false", Boolean.class),
     TEST_HOOK_LOOP_ENABLED_BOOL("false", Boolean.class),
     KEEP_EMULATOR_OPEN_BOOL("false", Boolean.class),
 

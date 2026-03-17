@@ -20,6 +20,9 @@ public class DefaultTaskPriorityProvider implements TaskPriorityProvider {
         if (task instanceof InitializeTask) {
             return 1000;
         }
+        if (task instanceof cl.camodev.wosbot.serv.task.impl.SkipTutorialTask) {
+            return 950;
+        }
         if (task instanceof BearTrapTask) {
             return 900;
         }

@@ -17,6 +17,7 @@
       </Label>
       <Label text="This task will create a character based on Age restrictions." />
       <CheckBox fx:id="checkBoxEnableCreateCharacter" mnemonicParsing="false" text="Enable Create Character Task" />
+      <CheckBox fx:id="checkBoxSkipTutorial" mnemonicParsing="false" text="Immediately skip tutorial" />
       <HBox alignment="CENTER" spacing="10.0">
          <children>
             <Label text="Maximum Age (minutes):" />

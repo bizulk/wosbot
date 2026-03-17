@@ -23,6 +23,7 @@ import cl.camodev.wosbot.serv.task.impl.ArenaTask;
 import cl.camodev.wosbot.serv.task.impl.BearTrapTask;
 import cl.camodev.wosbot.serv.task.impl.InitializeTask;
 import cl.camodev.wosbot.serv.task.impl.SkipTutorialTask;
+import cl.camodev.wosbot.serv.task.impl.CreateCharacterTask;
 import cl.camodev.wosbot.ex.StopExecutionException;
 
 import java.time.Duration;
@@ -206,8 +207,8 @@ public abstract class DelayedTask implements Runnable, Delayed {
         int initialTemplateFailures = this.templateSearchHelper.getFailedSearches();
 
         try {
-            // InitializeTask and SkipTutorialTask have special handling
-            if (this instanceof InitializeTask || this instanceof SkipTutorialTask) {
+            // InitializeTask, SkipTutorialTask, and CreateCharacterTask have special handling
+            if (this instanceof InitializeTask || this instanceof SkipTutorialTask || this instanceof CreateCharacterTask) {
                 execute();
                 return;
             }

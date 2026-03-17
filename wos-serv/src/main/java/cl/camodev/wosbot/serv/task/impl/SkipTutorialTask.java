@@ -69,15 +69,21 @@ public class SkipTutorialTask extends DelayedTask {
 
             // Check if task is still enabled in configuration
             try {
-                Boolean enabled = ServProfiles.getServices().getProfiles().stream()
+                DTOProfiles currentProfile = ServProfiles.getServices().getProfiles().stream()
                         .filter(p -> p.getId().equals(profile.getId()))
                         .findFirst()
-                        .map(p -> p.getConfig(EnumConfigurationKey.SKIP_TUTORIAL_ENABLED_BOOL, Boolean.class))
-                        .orElse(false);
+                        .orElse(null);
 
-                if (enabled != null && !enabled) {
-                    logInfo("Skip Tutorial Task disabled in settings. Stopping execution.");
-                    break;
+                if (currentProfile != null) {
+                    Boolean skipEnabled = currentProfile.getConfig(EnumConfigurationKey.SKIP_TUTORIAL_ENABLED_BOOL, Boolean.class);
+                    Boolean createSkipEnabled = currentProfile.getConfig(EnumConfigurationKey.CREATE_CHARACTER_SKIP_TUTORIAL_BOOL, Boolean.class);
+                    
+                    boolean isEnabled = (skipEnabled != null && skipEnabled) || (!isRecurring() && createSkipEnabled != null && createSkipEnabled);
+
+                    if (!isEnabled) {
+                        logInfo("Skip Tutorial Task disabled in settings (or not triggered from Create Character). Stopping execution.");
+                        break;
+                    }
                 }
             } catch (Exception e) {
                 logWarning("Failed to check Skip Tutorial task status: " + e.getMessage());

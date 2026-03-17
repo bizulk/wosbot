@@ -10,8 +10,10 @@ import cl.camodev.wosbot.console.enumerable.TpDailyTaskEnum;
 import cl.camodev.wosbot.ot.DTOPoint;
 import cl.camodev.wosbot.ot.DTOProfiles;
 import cl.camodev.wosbot.ot.DTOTesseractSettings;
+import cl.camodev.wosbot.serv.impl.ServScheduler;
 import cl.camodev.wosbot.serv.task.DelayedTask;
 import cl.camodev.wosbot.serv.task.EnumStartLocation;
+import cl.camodev.wosbot.serv.task.TaskQueue;
 import cl.camodev.wosbot.serv.task.constants.CommonGameAreas;
 
 /**
@@ -37,6 +39,7 @@ public class CreateCharacterTask extends DelayedTask {
     private static final DTOPoint AGE_OCR_BR = new DTOPoint(337, 400);
     private static final DTOPoint ACCEPT_BUTTON = new DTOPoint(340, 367);
     private static final DTOPoint CONFIRM_BUTTON = new DTOPoint(507, 780);
+    private static final DTOPoint CROSS_BUTTON = new DTOPoint(631, 158);// FIXXX ITTT <----------
 
     // --- OCR ---
     private static final DTOTesseractSettings TIPS_OCR_SETTINGS = DTOTesseractSettings.builder()
@@ -83,6 +86,9 @@ public class CreateCharacterTask extends DelayedTask {
         tapRandomPoint(SETTINGS_BUTTON_TL, SETTINGS_BUTTON_BR);
         sleepTask(500);
 
+        boolean Created = false;
+        while(!Created) {
+
         logInfo("Character");
         tapPoint(CHARACTER_BUTTON);
         sleepTask(500);
@@ -96,6 +102,7 @@ public class CreateCharacterTask extends DelayedTask {
 
         if (tipsText != null && tipsText.toLowerCase().contains("tips")) {
             logInfo("Change Emulator");
+            Created = true; // Ends the loop explicitly
             return;
         }
 
@@ -107,6 +114,7 @@ public class CreateCharacterTask extends DelayedTask {
         if (ageText == null || ageText.isEmpty()) {
             logWarning("OCR fail. Retry 5m");
             reschedule(LocalDateTime.now().plusMinutes(RESCHEDULE_DELAY_MINUTES));
+            Created = true;
             return;
         }
 
@@ -117,6 +125,7 @@ public class CreateCharacterTask extends DelayedTask {
         if (ageTotalMinutes < 0) {
             logWarning("Parse fail. Retry 5m");
             reschedule(LocalDateTime.now().plusMinutes(RESCHEDULE_DELAY_MINUTES));
+            Created = true;
             return;
         }
 
@@ -127,10 +136,34 @@ public class CreateCharacterTask extends DelayedTask {
             tapPoint(ACCEPT_BUTTON);
             sleepTask(300);
             tapPoint(CONFIRM_BUTTON);
+            sleepTask(100);
+            Created = true;
             logInfo("Done");
+            setRecurring(false); // Task will gracefully finish and not be rescheduled
+            
+            Boolean skipTutorial = profile.getConfig(
+                    EnumConfigurationKey.CREATE_CHARACTER_SKIP_TUTORIAL_BOOL,
+                    Boolean.class);
+            TaskQueue queue = ServScheduler.getServices().getQueueManager().getQueue(profile.getId());
+            if (queue != null) {
+                if (Boolean.TRUE.equals(skipTutorial)) {
+                    logInfo("Running Skip Tutorial Task...");
+                    queue.executeTaskNow(TpDailyTaskEnum.SKIP_TUTORIAL, false);
+                    
+                    logInfo("Removing Create Character task...");
+                    queue.removeTask(TpDailyTaskEnum.CREATE_CHARACTER);
+                    
+                    throw new cl.camodev.wosbot.ex.TaskPreemptedException("Switching to Skip Tutorial task immediately");
+                }
+                logInfo("Removing Create Character task...");
+                queue.removeTask(TpDailyTaskEnum.CREATE_CHARACTER);
+            }
+            return;
         } else {
-            logInfo("Age > max (" + ageTotalMinutes + "). Retry 5m");
-            reschedule(LocalDateTime.now().plusMinutes(RESCHEDULE_DELAY_MINUTES));
+            logInfo("Age > max (" + ageTotalMinutes + "). Retry");
+        }
+        tapPoint(CROSS_BUTTON);
+        sleepTask(500);
         }
     }
 

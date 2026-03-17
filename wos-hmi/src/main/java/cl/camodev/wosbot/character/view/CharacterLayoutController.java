@@ -15,6 +15,8 @@ public class CharacterLayoutController extends AbstractProfileController {
     @FXML
     private CheckBox checkBoxEnableCreateCharacter;
     @FXML
+    private CheckBox checkBoxSkipTutorial;
+    @FXML
     private TextField textFieldMaxAgeMinutes;
 
     private ProfileAux currentProfile;
@@ -23,6 +25,7 @@ public class CharacterLayoutController extends AbstractProfileController {
     private void initialize() {
         // Map the checkbox and textfield to the configuration keys
         checkBoxMappings.put(checkBoxEnableCreateCharacter, EnumConfigurationKey.CREATE_CHARACTER_ENABLED_BOOL);
+        checkBoxMappings.put(checkBoxSkipTutorial, EnumConfigurationKey.CREATE_CHARACTER_SKIP_TUTORIAL_BOOL);
         textFieldMappings.put(textFieldMaxAgeMinutes, EnumConfigurationKey.CREATE_CHARACTER_MAX_AGE_MINUTES_INT);
 
         // Initialize change events (inherited from AbstractProfileController)
