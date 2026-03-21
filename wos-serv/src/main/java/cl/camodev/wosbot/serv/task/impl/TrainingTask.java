@@ -220,7 +220,6 @@ public class TrainingTask extends DelayedTask {
      */
     @Override
     protected void execute() {
-        logInfo("=== Starting Training Task ===");
 
         loadConfiguration();
         buildQueuesList();

@@ -25,7 +25,6 @@ public class AllianceChestTask extends DelayedTask {
 
 	@Override
 	protected void execute() {
-		logInfo("Starting alliance chest collection task.");
 
 		if (!navigateToAllianceScreen()) {
 			rescheduleAndExit("Failed to navigate to alliance screen");

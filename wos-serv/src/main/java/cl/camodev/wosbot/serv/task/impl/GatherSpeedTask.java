@@ -98,7 +98,7 @@ public class GatherSpeedTask extends DelayedTask {
 	protected void execute() {
 		loadConfiguration();
 
-		logInfo(String.format("Starting gather speed boost task (%s).", boostType.getName()));
+		logInfo(String.format("Starting gather speed boost (%s).", boostType.getName()));
 
 		if (!navigateToGatheringSpeed()) {
 			logWarning("Failed to navigate to gathering speed menu. Rescheduling in 5 minutes.");
@@ -114,7 +114,6 @@ public class GatherSpeedTask extends DelayedTask {
 
 		closeMenuAndReturn();
 
-		logInfo("Gather speed boost activated successfully.");
 		rescheduleForBoostDuration();
 	}
 

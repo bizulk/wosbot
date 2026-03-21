@@ -161,7 +161,6 @@ public class ExpertsRomulusTagTask extends DelayedTask {
      */
     @Override
     protected void execute() {
-        logInfo("Attempting to claim loyalty tags from Romulus");
 
         if (!navigateToRomulusIcon()) {
             return; // Navigation failed, already rescheduled
@@ -175,7 +174,7 @@ public class ExpertsRomulusTagTask extends DelayedTask {
         }
 
         rescheduleToGameReset();
-        logInfo("Romulus tags task completed");
+
     }
 
     // ========================================================================

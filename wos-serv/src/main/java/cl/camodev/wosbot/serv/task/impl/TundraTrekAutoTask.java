@@ -57,7 +57,6 @@ public class TundraTrekAutoTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("=== Starting Tundra Trek Auto Task ===");
 
         try {
             // Navigate to tundra menu

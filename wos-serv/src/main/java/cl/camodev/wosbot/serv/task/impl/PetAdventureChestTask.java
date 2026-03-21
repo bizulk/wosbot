@@ -139,7 +139,6 @@ public class PetAdventureChestTask extends DelayedTask {
 	 */
 	@Override
 	protected void execute() {
-		logInfo("Starting pet adventure chest management");
 
 		// Validate stamina before proceeding
 		if (!staminaHelper.checkStaminaOrReschedule(

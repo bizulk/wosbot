@@ -199,7 +199,7 @@ public class ProfileLogger {
     private String formatLogMessage(String level, String message) {
         StringBuilder sb = new StringBuilder();
         sb.append(dateFormat.format(new Date()));
-        sb.append(" [").append(level).append("] ");
+        sb.append(" - ").append(level).append(" - ");
         sb.append(className).append(" - ");
         sb.append(message);
         return sb.toString();
@@ -212,7 +212,8 @@ public class ProfileLogger {
      */
     public void info(String message) {
         // Log to the main logger
-        logger.info(message);
+        String loggerMessage = (profile != null) ? profile.getName() + " - " + message : message;
+        logger.info(loggerMessage);
         
         // Also log to the profile log file if a profile is set
         if (profile != null) {

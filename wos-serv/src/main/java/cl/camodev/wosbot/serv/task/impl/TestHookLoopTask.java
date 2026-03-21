@@ -66,7 +66,7 @@ public class TestHookLoopTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("=== Test Hook Loop started ===");
+
         logInfo("Will run for up to " + (MAX_DURATION_MS / 1000) + " seconds.");
 
         // ── Pre-cache the template Mat once ──────────────────────────────

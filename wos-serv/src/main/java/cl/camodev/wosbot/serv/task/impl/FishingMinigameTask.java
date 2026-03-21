@@ -114,7 +114,6 @@ public class FishingMinigameTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("Fishing Minigame: PCV algorithm started.");
         trackedFish.clear();
         nextTrackId = 0;
 

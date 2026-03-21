@@ -42,7 +42,6 @@ public class LifeEssenceCaringTask extends DelayedTask {
 
 	@Override
 	protected void execute() {
-		logInfo("=== Starting Life Essence Caring Task ===");
 
 		// Load configuration
 		loadConfiguration();
@@ -77,7 +76,7 @@ public class LifeEssenceCaringTask extends DelayedTask {
 		}
 
 		// No island found - retry later
-		logInfo("No island needing care found. Rescheduling in " + retryOffsetMinutes + " minutes.");
+
 		closeAllMenus();
 		reschedule(LocalDateTime.now().plusMinutes(retryOffsetMinutes));
 	}

@@ -112,8 +112,6 @@ public class VipTask extends DelayedTask {
 	protected void execute() {
 		loadConfiguration();
 
-		logInfo("Starting VIP task.");
-
 		if (!openVipMenu()) {
 			logWarning("Failed to open VIP menu.");
 			scheduleNextExecution();
@@ -131,7 +129,7 @@ public class VipTask extends DelayedTask {
 		closeVipMenu();
 
 		scheduleNextExecution();
-		logInfo("VIP task completed successfully.");
+
 	}
 
 	/**

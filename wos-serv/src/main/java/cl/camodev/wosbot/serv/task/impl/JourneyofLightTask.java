@@ -26,8 +26,6 @@ public class JourneyofLightTask extends DelayedTask {
     @Override
     protected void execute() {
 
-        logInfo("Starting Journey of Light task.");
-
         this.textHelper = new TextRecognitionRetrier<>(provider);
 
         DTOImageSearchResult dealsResult = templateSearchHelper.searchTemplate(
@@ -103,9 +101,7 @@ public class JourneyofLightTask extends DelayedTask {
             logInfo("Next queue time for queue " + profile.getName() + ": "
                     + UtilTime.localDateTimeToDDHHMMSS(nextQueueTime));
         }
-
-        // set for when the next one is ready
-        logInfo("Next task scheduled to run in: " + UtilTime.localDateTimeToDDHHMMSS(nextScheduleTime));
+;
         reschedule(nextScheduleTime);
 
         sleepTask(200);

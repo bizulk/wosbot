@@ -104,7 +104,6 @@ public class DailyMissionTask extends DelayedTask {
 	 */
 	@Override
 	protected void execute() {
-		logInfo("Starting daily mission task");
 
 		loadTaskConfiguration();
 		navigateToDailyMissions();

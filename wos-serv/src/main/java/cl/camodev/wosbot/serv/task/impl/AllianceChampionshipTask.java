@@ -212,7 +212,6 @@ public class AllianceChampionshipTask extends DelayedTask {
      */
     @Override
     protected void execute() {
-        logInfo("Starting Alliance Championship task execution");
 
         if (!verifyExecutionWindow()) {
             // Outside window - reschedule for next window

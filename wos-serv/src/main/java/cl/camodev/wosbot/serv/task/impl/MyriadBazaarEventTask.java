@@ -82,7 +82,6 @@ public class MyriadBazaarEventTask extends DelayedTask {
                             .withCoordinates(topLeft, bottomRight)
                             .build());
         }
-        logInfo("Finished claiming Myriad Bazaar free rewards");
         reschedule(UtilTime.getGameReset());
 
     }

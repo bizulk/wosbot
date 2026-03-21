@@ -418,7 +418,6 @@ public class BearTrapTask extends DelayedTask {
      */
     @Override
     protected void execute() {
-        logInfo("Starting Bear Trap task execution");
         loadConfiguration();
 
         // Early exit if outside window - no execution, no cleanup needed
@@ -465,9 +464,6 @@ public class BearTrapTask extends DelayedTask {
             } else {
                 logInfo("Trap already ended for this window");
             }
-
-            logInfo("Bear Trap cycle completed successfully");
-
         } catch (Exception e) {
             logError("Error during Bear Trap execution: " + e.getMessage(), e);
         } finally {

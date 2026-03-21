@@ -140,7 +140,7 @@ public class ChiefOrderTask extends DelayedTask {
 	 */
 	@Override
 	protected void execute() {
-		logInfo("Starting Chief Order task: " + chiefOrderType.getDescription() +
+		logInfo("Starting Chief Order : " + chiefOrderType.getDescription() +
 				" (Cooldown: " + chiefOrderType.getCooldownHours() + " hours)");
 
 		if (!openChiefOrderMenu()) {

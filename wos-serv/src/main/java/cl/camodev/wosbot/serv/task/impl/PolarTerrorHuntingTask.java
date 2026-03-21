@@ -63,7 +63,6 @@ public class PolarTerrorHuntingTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("=== Starting Polar Terror Hunting Task ===");
 
         // Load configuration fresh after profile refresh
         loadConfiguration();

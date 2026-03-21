@@ -30,8 +30,7 @@ public class TriumphTask extends DelayedTask {
 	}
 
 	@Override
-	protected void execute() {
-		logInfo("Starting Alliance Triumph task to claim rewards");
+	protected void execute() {;
 
 		// Navigate to alliance menu
 		logInfo("Tapping alliance button at bottom of screen");
@@ -120,7 +119,6 @@ public class TriumphTask extends DelayedTask {
 			reschedule(nextSchedule);
 		}
 
-		logInfo("Alliance Triumph task completed");
 	}
 
 }

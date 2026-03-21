@@ -27,7 +27,6 @@ public class ExpertSkillTrainingTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("Starting Expert Skill Training task.");
 
         // Get priority list configuration
         List<DTOPriorityItem> enabledPriorities = PriorityItemUtil.getEnabledPriorities(

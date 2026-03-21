@@ -58,7 +58,6 @@ public class DailyLabyrinthTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("Starting Daily Labyrinth task for profile: " + profile.getName());
 
         try {
             // Step 1: Navigate to labyrinth menu
@@ -70,7 +69,6 @@ public class DailyLabyrinthTask extends DelayedTask {
             // Step 2: Execute challenges based on current day
             executeLabyrinthChallenges();
 
-            logInfo("Daily Labyrinth task completed successfully for profile: " + profile.getName());
             reschedule(UtilTime.getGameReset());
 
         } catch (Exception e) {

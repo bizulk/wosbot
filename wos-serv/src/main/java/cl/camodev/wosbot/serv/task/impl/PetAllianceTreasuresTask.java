@@ -100,7 +100,6 @@ public class PetAllianceTreasuresTask extends DelayedTask {
 	 */
 	@Override
 	protected void execute() {
-		logInfo("Starting alliance treasure claim process");
 
 		if (!navigateToBeastCage()) {
 			rescheduleForRetry();

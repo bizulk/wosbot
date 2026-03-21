@@ -154,7 +154,7 @@ public class CrystalLaboratoryTask extends DelayedTask {
      */
     @Override
     protected void execute() {
-        logInfo("Starting Crystal Laboratory task");
+
         loadConfiguration();
 
         if (!navigateToCrystalLaboratory()) {

@@ -187,8 +187,6 @@ public class ArenaTask extends DelayedTask {
             return; // Reschedule handled inside validation
         }
 
-        logInfo("Starting arena task.");
-
         if (!navigateToArena()) {
             logWarning("Failed to navigate to arena.");
             rescheduleWithActivationHour();
@@ -213,7 +211,6 @@ public class ArenaTask extends DelayedTask {
 
         processChallenges();
 
-        logInfo("Arena task completed successfully.");
         rescheduleWithActivationHour();
     }
 

@@ -24,7 +24,6 @@ public class ManualRallyJoin extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("=== Starting Manual Rally Join Task ===");
 
         // Search for the rally indicator
         logInfo("Searching for rally indicator...");

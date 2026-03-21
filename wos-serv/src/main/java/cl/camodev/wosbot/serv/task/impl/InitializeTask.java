@@ -109,7 +109,6 @@ public class InitializeTask extends DelayedTask {
 	@Override
 	protected void execute() {
 		setRecurring(false);
-		logInfo("Starting initialization task...");
 
 		ensureEmulatorRunning();
 		ensureGameInstalled();

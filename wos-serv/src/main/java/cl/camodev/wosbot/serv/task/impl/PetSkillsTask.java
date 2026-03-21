@@ -239,7 +239,7 @@ public class PetSkillsTask extends DelayedTask {
             return;
         }
 
-        logInfo(String.format("Starting Pet Skills task for %d skill(s).", enabledSkills.size()));
+        logInfo(String.format("Pet Skills for %d skill(s).", enabledSkills.size()));
 
         if (!openPetsMenu()) {
             handleMenuOpenFailure();

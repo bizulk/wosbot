@@ -22,7 +22,7 @@ public class DummyTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("Starting Dummy Task - Searching for GO image...");
+        logInfo("Searching for GO image...");
 
         while (true) {
             // Check for preemption or stop signals relative to the task framework

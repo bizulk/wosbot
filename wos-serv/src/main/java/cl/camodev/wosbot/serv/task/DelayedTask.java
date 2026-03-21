@@ -207,6 +207,7 @@ public abstract class DelayedTask implements Runnable, Delayed {
         int initialTemplateFailures = this.templateSearchHelper.getFailedSearches();
 
         try {
+
             // InitializeTask, SkipTutorialTask, and CreateCharacterTask have special handling
             if (this instanceof InitializeTask || this instanceof SkipTutorialTask || this instanceof CreateCharacterTask) {
                 execute();
@@ -443,8 +444,7 @@ public abstract class DelayedTask implements Runnable, Delayed {
     // ========================================================================
 
     public void logInfo(String message) {
-        String prefixedMessage = profile.getName() + " - " + message;
-        logger.info(prefixedMessage);
+        logger.info(message);
         servLogs.appendLog(EnumTpMessageSeverity.INFO, taskName, profile.getName(), message);
     }
 

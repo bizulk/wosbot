@@ -182,7 +182,6 @@ public class ExpertsRomulusTroopsTask extends DelayedTask {
      */
     @Override
     protected void execute() {
-        logInfo("Attempting to claim troops from Romulus");
 
         // Load and validate troop type configuration
         String troopType = loadTroopTypeConfiguration();
@@ -211,7 +210,6 @@ public class ExpertsRomulusTroopsTask extends DelayedTask {
         }
 
         rescheduleToGameReset();
-        logInfo("Romulus troops task completed");
     }
 
     // ========================================================================

@@ -161,7 +161,6 @@ public class AllianceTechTask extends DelayedTask {
 	 */
 	@Override
 	protected void execute() {
-		logInfo("Starting Alliance Tech donation task");
 
 		donationsSuccessful = false;
 		loadConfiguration();

@@ -44,6 +44,7 @@ public class TaskQueue {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskQueue.class);
     private static final long IDLE_WAIT_TIME = 999; // milliseconds to wait between task checking cycles
+    protected static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
     private final TaskPriorityProvider priorityProvider = new DefaultTaskPriorityProvider();
 
@@ -338,7 +339,7 @@ public class TaskQueue {
 
             task.setLastExecutionTime(LocalDateTime.now());
             task.run();
-
+            logInfoWithTask(task, "Task Completed: " + task.getTaskName() + ", scheduled : " + task.getScheduled().format(DATETIME_FORMATTER));
             executionSuccessful = true;
 
             // Check if daily missions should be scheduled

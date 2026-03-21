@@ -42,7 +42,6 @@ public class MercenaryEventTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("=== Starting Mercenary Event ===");
 
         flagNumber = profile.getConfig(EnumConfigurationKey.MERCENARY_FLAG_INT, Integer.class);
         useFlag = flagNumber > 0;

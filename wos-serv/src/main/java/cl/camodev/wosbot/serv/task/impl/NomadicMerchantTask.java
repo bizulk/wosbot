@@ -26,7 +26,6 @@ public class NomadicMerchantTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("Starting the Nomadic Merchant task.");
 
         // STEP 1: Navigate to shop - Search for the bottom bar shop button
         DTOImageSearchResult shopButtonResult = templateSearchHelper.searchTemplate(
@@ -132,7 +131,6 @@ public class NomadicMerchantTask extends DelayedTask {
             }
         }
         // Final step: schedule task till game reset
-        logInfo("Rescheduling Nomadic Merchant task for the next game reset.");
         reschedule(UtilTime.getGameReset());
     }
 

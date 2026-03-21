@@ -242,8 +242,6 @@ public class AllianceShopTask extends DelayedTask {
     protected void execute() {
         loadConfiguration();
 
-        logInfo("Starting Alliance Shop purchase task.");
-
         if (!navigateToShopAndReadCoins()) {
             logWarning("Failed to navigate to shop or read coins. Task ending.");
             setRecurring(false);
@@ -268,7 +266,7 @@ public class AllianceShopTask extends DelayedTask {
         processPurchases(enabledPriorities);
 
         setRecurring(false);
-        logInfo("Alliance Shop task completed.");
+
     }
 
     // ========================================================================

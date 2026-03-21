@@ -147,7 +147,6 @@ public class AllianceAutojoinTask extends DelayedTask {
 	 */
 	@Override
 	protected void execute() {
-		logInfo("Starting Alliance auto-join configuration");
 
 		loadConfiguration();
 
