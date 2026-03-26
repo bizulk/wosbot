@@ -344,27 +344,25 @@ public class PolarTerrorHuntingTask extends DelayedTask {
             return false;
         }
 
+        // Polar terror slider positions, exists only from level 4.
         DTOPoint[] levelPoints = {
-                new DTOPoint(129, 1052), // Level 1
-                new DTOPoint(173, 1052), // Level 2
-                new DTOPoint(217, 1052), // Level 3
-                new DTOPoint(261, 1052), // Level 4
-                new DTOPoint(305, 1052), // Level 5
-                new DTOPoint(349, 1052), // Level 6
-                new DTOPoint(393, 1052), // Level 7
-                new DTOPoint(437, 1052) // Level 8
+                new DTOPoint(129, 1052), // Level 4
+                new DTOPoint(200, 1052), // Level 5
+                new DTOPoint(280, 1052), // Level 6
+                new DTOPoint(357, 1052), // Level 7
+                new DTOPoint(432, 1052), // Level 8
         };
         // Need to tap on the polar terror icon and set the level
         tapPoint(polarTerror.getPoint());
         sleepTask(100);
         if (polarLevel != -1) {
             logInfo(String.format("Adjusting Polar Terror level to %d", polarLevel));
-            if (polarLevel < 1 || polarLevel > levelPoints.length) {
-                logError(String.format("Invalid Polar Terror level configured: %d. Must be between 1 and %d.",
+            if (polarLevel < 4 || polarLevel > levelPoints.length + 3) {
+                logError(String.format("Invalid Polar Terror level configured: %d. Must be between 4 and %d.",
                         polarLevel, MAX_POLAR_LEVEL));
                 return false;
             }
-            tapRandomPoint(levelPoints[polarLevel - 1], levelPoints[polarLevel - 1], 3, 100);
+            tapRandomPoint(levelPoints[polarLevel - 4], levelPoints[polarLevel - 4], 3, 100);
         }
         // tap on search button
         logDebug("Tapping on search button...");
