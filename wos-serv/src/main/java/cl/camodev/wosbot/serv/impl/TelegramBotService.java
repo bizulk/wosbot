@@ -45,9 +45,9 @@ import java.util.ArrayList;
  * no inbound port / firewall change required.
  *
  * Supported commands (case-insensitive):
- *   /start or /startbot  → launch the bot automation
- *   /stop  or /stopbot   → stop  the bot automation
- *   /status              → reply with current running state
+ * /start or /startbot → launch the bot automation
+ * /stop or /stopbot → stop the bot automation
+ * /status → reply with current running state
  */
 public class TelegramBotService implements IBotStateListener {
 
@@ -68,20 +68,22 @@ public class TelegramBotService implements IBotStateListener {
 
     // ── state ─────────────────────────────────────────────────────────────────
     private final AtomicBoolean running = new AtomicBoolean(false);
-    private final AtomicLong    lastUpdateId = new AtomicLong(-1);
-    private volatile boolean    botCurrentlyRunning = false;
+    private final AtomicLong lastUpdateId = new AtomicLong(-1);
+    private volatile boolean botCurrentlyRunning = false;
 
-    private String  token;
-    private long    allowedChatId;
-    private Thread  pollingThread;
+    private String token;
+    private long allowedChatId;
+    private Thread pollingThread;
 
-    private final HttpClient   httpClient;
+    private final HttpClient httpClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    /** Tracks the Telegram message_id of the last /queue page sent per profile-ID,
-     *  so button actions can edit that message in-place instead of sending a new one. */
-    private final java.util.concurrent.ConcurrentHashMap<Long, Long> lastQueueMsgIds =
-            new java.util.concurrent.ConcurrentHashMap<>();
+    /**
+     * Tracks the Telegram message_id of the last /queue page sent per profile-ID,
+     * so button actions can edit that message in-place instead of sending a new
+     * one.
+     */
+    private final java.util.concurrent.ConcurrentHashMap<Long, Long> lastQueueMsgIds = new java.util.concurrent.ConcurrentHashMap<>();
 
     private TelegramBotService() {
         this.httpClient = HttpClient.newBuilder()
@@ -96,7 +98,8 @@ public class TelegramBotService implements IBotStateListener {
      * Start the Telegram polling service.
      *
      * @param token         Telegram Bot API token
-     * @param allowedChatId The only Telegram chat-ID that is allowed to issue commands
+     * @param allowedChatId The only Telegram chat-ID that is allowed to issue
+     *                      commands
      */
     public synchronized void start(String token, long allowedChatId) {
         if (running.get()) {
@@ -107,7 +110,7 @@ public class TelegramBotService implements IBotStateListener {
             logger.warn("TelegramBotService: token is blank, not starting");
             return;
         }
-        this.token         = token.trim();
+        this.token = token.trim();
         this.allowedChatId = allowedChatId;
         running.set(true);
         lastUpdateId.set(-1);
@@ -172,7 +175,11 @@ public class TelegramBotService implements IBotStateListener {
             } catch (Exception e) {
                 if (running.get()) {
                     logger.error("TelegramBotService poll error: {}", e.getMessage());
-                    try { Thread.sleep(5_000); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); }
+                    try {
+                        Thread.sleep(5_000);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                    }
                 }
             }
         }
@@ -180,7 +187,8 @@ public class TelegramBotService implements IBotStateListener {
 
     private String buildGetUpdatesUrl() {
         long offset = lastUpdateId.get() >= 0 ? lastUpdateId.get() + 1 : 0;
-        // allowed_updates ensures Telegram delivers both 'message' and 'callback_query' events.
+        // allowed_updates ensures Telegram delivers both 'message' and 'callback_query'
+        // events.
         // Without this, inline-keyboard button taps are silently dropped by Telegram.
         return API_BASE + token
                 + "/getUpdates?timeout=" + LONG_POLL_TIMEOUT
@@ -191,22 +199,22 @@ public class TelegramBotService implements IBotStateListener {
     // ── command handling ──────────────────────────────────────────────────────
 
     private void processUpdate(JsonNode update) {
-        // ── callback_query  (inline-keyboard button clicks) ───────────────────
+        // ── callback_query (inline-keyboard button clicks) ───────────────────
         JsonNode callbackQuery = update.path("callback_query");
         if (!callbackQuery.isMissingNode()) {
-            String callbackId  = callbackQuery.path("id").asText("");
-            long   cbChatId    = callbackQuery.path("message").path("chat").path("id").asLong(-1);
-            long   cbMessageId = callbackQuery.path("message").path("message_id").asLong(-1);
-            String cbData      = callbackQuery.path("data").asText("noop");
+            String callbackId = callbackQuery.path("id").asText("");
+            long cbChatId = callbackQuery.path("message").path("chat").path("id").asLong(-1);
+            long cbMessageId = callbackQuery.path("message").path("message_id").asLong(-1);
+            String cbData = callbackQuery.path("data").asText("noop");
             if (cbChatId >= 0) {
                 if (allowedChatId != 0 && cbChatId != allowedChatId) {
                     final String cid = callbackId;
                     Thread.ofVirtual().start(() -> answerCallbackQuery(cid, "⛔ Unauthorized"));
                     return;
                 }
-                final String fid   = callbackId;
-                final long   fChat = cbChatId;
-                final long   fMsg  = cbMessageId;
+                final String fid = callbackId;
+                final long fChat = cbChatId;
+                final long fMsg = cbMessageId;
                 final String fData = cbData;
                 Thread.ofVirtual().start(() -> handleCallback(fid, fChat, fMsg, fData));
             }
@@ -220,7 +228,8 @@ public class TelegramBotService implements IBotStateListener {
         }
 
         long chatId = message.path("chat").path("id").asLong(-1);
-        if (chatId < 0) return;
+        if (chatId < 0)
+            return;
 
         // Security: ignore any chat that is not the pre-configured one
         if (allowedChatId != 0 && chatId != allowedChatId) {
@@ -231,29 +240,42 @@ public class TelegramBotService implements IBotStateListener {
 
         String text = message.path("text").asText("").trim().toLowerCase();
 
-        if (text.startsWith("/start") || text.startsWith("/startbot")) {
+        if (text.startsWith("/start") || text.startsWith("/startbot") || text.contains("start bot")) {
             if (botCurrentlyRunning) {
                 sendMessage(chatId, "⚙️ Bot is already running.");
             } else {
-                sendMessage(chatId, "▶️ Starting bot...");
-                Thread.ofVirtual().start(() -> ServScheduler.getServices().startBot());
+                Thread.ofVirtual().start(() -> {
+                    ServScheduler.getServices().startBot();
+                    sendMessage(chatId, "▶️ Bot started.");
+                });
             }
-        } else if (text.startsWith("/stop") || text.startsWith("/stopbot")) {
+        } else if (text.startsWith("/stop") || text.startsWith("/stopbot") || text.contains("stop bot")) {
             if (!botCurrentlyRunning) {
                 sendMessage(chatId, "⏹️ Bot is not currently running.");
             } else {
-                sendMessage(chatId, "⏹️ Stopping bot...");
-                Thread.ofVirtual().start(() -> ServScheduler.getServices().stopBot());
+                Thread.ofVirtual().start(() -> {
+                    ServScheduler.getServices().stopBot();
+                    sendMessage(chatId, "⏹️ Bot stopped.");
+                });
             }
-        } else if (text.startsWith("/status")) {
+        } else if (text.startsWith("/status") || text.contains("status")) {
             String status = botCurrentlyRunning ? "✅ Bot is *running*." : "🔴 Bot is *stopped*.";
             sendMessage(chatId, status);
-        } else if (text.startsWith("/screenshot")) {
+        } else if (text.startsWith("/screenshot") || text.contains("screenshot")) {
             sendMessage(chatId, "📸 Capturing screenshot...");
             Thread.ofVirtual().start(() -> sendScreenshot(chatId));
-        } else if (text.startsWith("/queue")) {
+        } else if (text.startsWith("/queue") || text.contains("queue")) {
             Thread.ofVirtual().start(() -> handleTaskQueue(chatId));
-        } else if (text.startsWith("/help") || text.equals("/")) {
+        } else if (text.startsWith("/stats") || text.contains("stats")) {
+            Thread.ofVirtual().start(() -> handleStatsCommand(chatId));
+        } else if (text.startsWith("/logs") || text.contains("logs")) {
+            sendMessage(chatId, "📄 Fetching logs...");
+            Thread.ofVirtual().start(() -> handleLogsCommand(chatId));
+        } else if (text.startsWith("/profiles") || text.contains("profiles")) {
+            Thread.ofVirtual().start(() -> handleProfilesCommand(chatId, -1L));
+        } else if (text.startsWith("/reboot") || text.contains("reboot")) {
+            Thread.ofVirtual().start(() -> handleRebootCommand(chatId));
+        } else if (text.startsWith("/help") || text.equals("/") || text.contains("help")) {
             sendMessage(chatId, buildHelpMessage());
         } else {
             sendMessage(chatId,
@@ -266,11 +288,16 @@ public class TelegramBotService implements IBotStateListener {
     private void registerBotCommands() {
         try {
             ArrayNode cmds = objectMapper.createArrayNode();
-            cmds.add(objectMapper.createObjectNode().put("command", "startbot").put("description", "Start the automation routines"));
-            cmds.add(objectMapper.createObjectNode().put("command", "stopbot").put("description", "Stop the automation routines"));
-            cmds.add(objectMapper.createObjectNode().put("command", "status").put("description", "Show automation status"));
-            cmds.add(objectMapper.createObjectNode().put("command", "screenshot").put("description", "Capture & send emulator screen"));
-            cmds.add(objectMapper.createObjectNode().put("command", "queue").put("description", "Task queue with schedule/remove/run"));
+            cmds.add(objectMapper.createObjectNode().put("command", "startbot").put("description",
+                    "Start the automation routines"));
+            cmds.add(objectMapper.createObjectNode().put("command", "stopbot").put("description",
+                    "Stop the automation routines"));
+            cmds.add(objectMapper.createObjectNode().put("command", "status").put("description",
+                    "Show automation status"));
+            cmds.add(objectMapper.createObjectNode().put("command", "screenshot").put("description",
+                    "Capture & send emulator screen"));
+            cmds.add(objectMapper.createObjectNode().put("command", "queue").put("description",
+                    "Task queue with schedule/remove/run"));
             cmds.add(objectMapper.createObjectNode().put("command", "help").put("description", "Show help message"));
 
             ObjectNode body = objectMapper.createObjectNode();
@@ -296,27 +323,26 @@ public class TelegramBotService implements IBotStateListener {
     // ── Help message ──────────────────────────────────────────────────────────
 
     private static String buildHelpMessage() {
-        return
-            "╔══════════════════════════╗\n"
-          + "║   🤖  WOS Bot  •  Help   ║\n"
-          + "╚══════════════════════════╝\n"
-          + "\n"
-          + "🚀 *Process Control* _(watcher – always on)_\n"
-          + "`/launch`      — Start the bot app (open the JAR)\n"
-          + "`/kill`        — Force-close the bot app\n"
-          + "`/wstatus`     — Check if the bot app is running\n"
-          + "\n"
-          + "⚙️ *Automation Control* _(requires app to be running)_\n"
-          + "`/startbot`    — Begin the automation routines\n"
-          + "`/stopbot`     — Pause the automation routines\n"
-          + "`/status`      — Show whether automation is running\n"
-          + "`/screenshot`  — Capture & send emulator screen\n"
-          + "`/queue`       — Show task queue with schedule/remove/execute controls\n"
-          + "\n"
-          + "❓ *Other*\n"
-          + "`/help`        — Show this message\n"
-          + "\n"
-          + "_Tip: send /whelp from the watcher if the app is closed._";
+        return "╔══════════════════════════╗\n"
+                + "║   🤖  WOS Bot  •  Help   ║\n"
+                + "╚══════════════════════════╝\n"
+                + "\n"
+                + "🚀 *Process Control* _(watcher – always on)_\n"
+                + "`/launch`      — Start the bot app (open the JAR)\n"
+                + "`/kill`        — Force-close the bot app\n"
+                + "`/wstatus`     — Check if the bot app is running\n"
+                + "\n"
+                + "⚙️ *Automation Control* _(requires app to be running)_\n"
+                + "`/startbot`    — Begin the automation routines\n"
+                + "`/stopbot`     — Pause the automation routines\n"
+                + "`/status`      — Show whether automation is running\n"
+                + "`/screenshot`  — Capture & send emulator screen\n"
+                + "`/queue`       — Show task queue with schedule/remove/execute controls\n"
+                + "\n"
+                + "❓ *Other*\n"
+                + "`/help`        — Show this message\n"
+                + "\n"
+                + "_Tip: send /whelp from the watcher if the app is closed._";
     }
 
     // ── Screenshot ────────────────────────────────────────────────────────────
@@ -376,9 +402,9 @@ public class TelegramBotService implements IBotStateListener {
 
     private byte[] rawImageToPng(DTORawImage raw) {
         try {
-            int width  = raw.getWidth();
+            int width = raw.getWidth();
             int height = raw.getHeight();
-            int bpp    = raw.getBpp();       // bits per pixel: 32 (RGBA) or 16 (RGB565)
+            int bpp = raw.getBpp(); // bits per pixel: 32 (RGBA) or 16 (RGB565)
             byte[] data = raw.getData();
 
             logger.debug("rawImageToPng: {}x{}, bpp={}, dataLen={}", width, height, bpp, data.length);
@@ -390,8 +416,9 @@ public class TelegramBotService implements IBotStateListener {
                 int[] pixels = new int[width * height];
                 for (int i = 0; i < pixels.length; i++) {
                     int idx = i * 4;
-                    if (idx + 3 >= data.length) break;
-                    int r = data[idx]     & 0xFF;
+                    if (idx + 3 >= data.length)
+                        break;
+                    int r = data[idx] & 0xFF;
                     int g = data[idx + 1] & 0xFF;
                     int b = data[idx + 2] & 0xFF;
                     int a = data[idx + 3] & 0xFF;
@@ -404,13 +431,14 @@ public class TelegramBotService implements IBotStateListener {
                 int[] pixels = new int[width * height];
                 for (int i = 0; i < pixels.length; i++) {
                     int idx = i * 2;
-                    if (idx + 1 >= data.length) break;
-                    int lo = data[idx]     & 0xFF;
+                    if (idx + 1 >= data.length)
+                        break;
+                    int lo = data[idx] & 0xFF;
                     int hi = data[idx + 1] & 0xFF;
                     int rgb565 = (hi << 8) | lo;
                     int r = ((rgb565 >> 11) & 0x1F) * 255 / 31;
-                    int g = ((rgb565 >>  5) & 0x3F) * 255 / 63;
-                    int b = ( rgb565        & 0x1F) * 255 / 31;
+                    int g = ((rgb565 >> 5) & 0x3F) * 255 / 63;
+                    int b = (rgb565 & 0x1F) * 255 / 31;
                     pixels[i] = (r << 16) | (g << 8) | b;
                 }
                 img.setRGB(0, 0, width, height, pixels, 0, width);
@@ -420,8 +448,9 @@ public class TelegramBotService implements IBotStateListener {
                 int[] pixels = new int[width * height];
                 for (int i = 0; i < pixels.length; i++) {
                     int idx = i * 3;
-                    if (idx + 2 >= data.length) break;
-                    int r = data[idx]     & 0xFF;
+                    if (idx + 2 >= data.length)
+                        break;
+                    int r = data[idx] & 0xFF;
                     int g = data[idx + 1] & 0xFF;
                     int b = data[idx + 2] & 0xFF;
                     pixels[i] = (r << 16) | (g << 8) | b;
@@ -476,6 +505,37 @@ public class TelegramBotService implements IBotStateListener {
             body.put("text", text);
             body.put("parse_mode", "Markdown");
 
+            ArrayNode keyboard = objectMapper.createArrayNode();
+
+            ArrayNode row1 = objectMapper.createArrayNode();
+            row1.add(objectMapper.createObjectNode().put("text", "📸 SCREENSHOT"));
+            row1.add(objectMapper.createObjectNode().put("text", "📋 QUEUE"));
+            row1.add(objectMapper.createObjectNode().put("text", "📈 STATS"));
+            keyboard.add(row1);
+
+            ArrayNode row2 = objectMapper.createArrayNode();
+            row2.add(objectMapper.createObjectNode().put("text", "▶️ START BOT"));
+            row2.add(objectMapper.createObjectNode().put("text", "⏹️ STOP BOT"));
+            keyboard.add(row2);
+
+            ArrayNode row3 = objectMapper.createArrayNode();
+            row3.add(objectMapper.createObjectNode().put("text", "👥 PROFILES"));
+            row3.add(objectMapper.createObjectNode().put("text", "📄 LOGS"));
+            row3.add(objectMapper.createObjectNode().put("text", "🔄 REBOOT"));
+            keyboard.add(row3);
+
+            ArrayNode row4 = objectMapper.createArrayNode();
+            row4.add(objectMapper.createObjectNode().put("text", "ℹ️ STATUS"));
+            row4.add(objectMapper.createObjectNode().put("text", "❓ HELP"));
+            keyboard.add(row4);
+
+            ObjectNode replyMarkup = objectMapper.createObjectNode();
+            replyMarkup.set("keyboard", keyboard);
+            replyMarkup.put("resize_keyboard", true);
+            replyMarkup.put("is_persistent", true);
+
+            body.set("reply_markup", replyMarkup);
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(API_BASE + token + "/sendMessage"))
                     .timeout(Duration.ofSeconds(10))
@@ -493,7 +553,8 @@ public class TelegramBotService implements IBotStateListener {
      * Validate that a token is well-formed by calling getMe.
      *
      * @param token the token to test
-     * @return the bot username if the token is valid, or an error string starting with "ERROR:"
+     * @return the bot username if the token is valid, or an error string starting
+     *         with "ERROR:"
      */
     public String testToken(String token) {
         if (token == null || token.isBlank()) {
@@ -557,24 +618,24 @@ public class TelegramBotService implements IBotStateListener {
      * paginated task\-queue message for one profile, using MarkdownV2.
      *
      * Layout
-     *   ─ Polished text body: header, status badges, task rows with inline timers
-     *   ─ Keyboard: 1 row per task → wide [📅 Name · Timer] + narrow [🗑] [▶️]
-     *   ─ Bottom row: navigation + 🔄 Refresh
+     * ─ Polished text body: header, status badges, task rows with inline timers
+     * ─ Keyboard: 1 row per task → wide [📅 Name · Timer] + narrow [🗑] [▶️]
+     * ─ Bottom row: navigation + 🔄 Refresh
      */
     private void sendQueuePage(long chatId, long messageId,
-                               DTOProfiles profile, TaskQueue queue, int page) {
-        List<TaskEntry> all        = buildTaskEntries(profile.getId(), queue);
-        int             total      = all.size();
-        int             totalPages = Math.max(1, (int) Math.ceil((double) total / QUEUE_PAGE_SIZE));
+            DTOProfiles profile, TaskQueue queue, int page) {
+        List<TaskEntry> all = buildTaskEntries(profile.getId(), queue);
+        int total = all.size();
+        int totalPages = Math.max(1, (int) Math.ceil((double) total / QUEUE_PAGE_SIZE));
         page = Math.max(0, Math.min(page, totalPages - 1));
-        int from  = page * QUEUE_PAGE_SIZE;
-        int to    = Math.min(from + QUEUE_PAGE_SIZE, total);
+        int from = page * QUEUE_PAGE_SIZE;
+        int to = Math.min(from + QUEUE_PAGE_SIZE, total);
         List<TaskEntry> slice = all.subList(from, to);
 
         boolean queueActive = (queue != null);
-        boolean running     = queueActive && queue.isRunning();
-        long    executing   = all.stream().filter(t -> t.isExecuting).count();
-        long    scheduled   = all.stream().filter(t -> t.isScheduled && !t.isExecuting).count();
+        boolean running = queueActive && queue.isRunning();
+        long executing = all.stream().filter(t -> t.isExecuting).count();
+        long scheduled = all.stream().filter(t -> t.isScheduled && !t.isExecuting).count();
 
         // ── Message text (MarkdownV2) ─────────────────────────────────────────
         StringBuilder sb = new StringBuilder();
@@ -588,9 +649,12 @@ public class TelegramBotService implements IBotStateListener {
         sb.append(queueActive ? "🟢 Active" : "🔴 Inactive");
         sb.append("    ").append(running ? "▶️ Running" : "⏸ Paused").append("\n");
         if (executing > 0 || scheduled > 0) {
-            if (executing > 0) sb.append("🔄 ").append(executing).append(" running");
-            if (executing > 0 && scheduled > 0) sb.append("    ");
-            if (scheduled > 0) sb.append("🟡 ").append(scheduled).append(" queued");
+            if (executing > 0)
+                sb.append("🔄 ").append(executing).append(" running");
+            if (executing > 0 && scheduled > 0)
+                sb.append("    ");
+            if (scheduled > 0)
+                sb.append("🟡 ").append(scheduled).append(" queued");
             sb.append("\n");
         }
         sb.append("\n");
@@ -605,9 +669,10 @@ public class TelegramBotService implements IBotStateListener {
             sb.append(t.statusIcon).append("  *").append(escV2(displayName)).append("*\n");
             // Line 2: timer + last run (clean inline layout)
             sb.append("      ⏱  `").append(t.nextStr).append("`")
-              .append("   ·   last: _").append(escV2(t.lastStr)).append("_\n");
+                    .append("   ·   last: _").append(escV2(t.lastStr)).append("_\n");
 
-            if (i < slice.size() - 1) sb.append("\n");
+            if (i < slice.size() - 1)
+                sb.append("\n");
         }
 
         // ── Footer ──
@@ -615,36 +680,36 @@ public class TelegramBotService implements IBotStateListener {
         sb.append("\n━━━━━━━━━━━━━━━━━━━━━━\n");
         sb.append("📄 _").append(escV2("Page " + (page + 1) + " / " + totalPages
                 + "  ·  " + (from + 1) + "–" + to + " of " + total))
-          .append("_   ⏱ _").append(escV2(ts)).append("_");
+                .append("_   ⏱ _").append(escV2(ts)).append("_");
 
         // ── Inline keyboard ───────────────────────────────────────────────────
         // Telegram gives EQUAL width to all buttons in one row (API constraint).
         // Workaround: 2 rows per task.
-        //   Row 1: full-width task label  [icon  TaskName  ·  Timer  📅]
-        //   Row 2: two action buttons     [🗑 Remove]  [▶️ Run]
-        ArrayNode kb  = objectMapper.createArrayNode();
-        long      pid = profile.getId();
+        // Row 1: full-width task label [icon TaskName · Timer 📅]
+        // Row 2: two action buttons [🗑 Remove] [▶️ Run]
+        ArrayNode kb = objectMapper.createArrayNode();
+        long pid = profile.getId();
 
         for (TaskEntry t : slice) {
-            String name      = t.taskEnum.getName();
+            String name = t.taskEnum.getName();
             String shortName = name.length() > 20 ? name.substring(0, 19) + "…" : name;
-            int    tid       = t.taskEnum.getId();
+            int tid = t.taskEnum.getId();
 
             // Row 1 – full-width label button (tapping opens schedule picker)
             String label = t.statusIcon + "  " + shortName + "  ·  " + t.nextStr;
             ArrayNode labelRow = objectMapper.createArrayNode();
             labelRow.add(objectMapper.createObjectNode()
-                    .put("text",          label)
+                    .put("text", label)
                     .put("callback_data", "sch:" + pid + ":" + tid + ":" + page));
             kb.add(labelRow);
 
             // Row 2 – two equal action buttons (50 / 50)
             ArrayNode actRow = objectMapper.createArrayNode();
             actRow.add(objectMapper.createObjectNode()
-                    .put("text",          "🗑  Remove")
+                    .put("text", "🗑  Remove")
                     .put("callback_data", "rem:" + pid + ":" + tid + ":" + page));
             actRow.add(objectMapper.createObjectNode()
-                    .put("text",          "▶️  Run")
+                    .put("text", "▶️  Run")
                     .put("callback_data", "exe:" + pid + ":" + tid + ":" + page));
             kb.add(actRow);
         }
@@ -653,15 +718,15 @@ public class TelegramBotService implements IBotStateListener {
         ArrayNode nav = objectMapper.createArrayNode();
         if (totalPages > 1 && page > 0) {
             nav.add(objectMapper.createObjectNode()
-                    .put("text",          "◄ Prev")
+                    .put("text", "◄ Prev")
                     .put("callback_data", "pg:" + pid + ":" + (page - 1)));
         }
         nav.add(objectMapper.createObjectNode()
-                .put("text",          "🔄 Refresh")
+                .put("text", "🔄 Refresh")
                 .put("callback_data", "pg:" + pid + ":" + page));
         if (totalPages > 1 && page < totalPages - 1) {
             nav.add(objectMapper.createObjectNode()
-                    .put("text",          "Next ►")
+                    .put("text", "Next ►")
                     .put("callback_data", "pg:" + pid + ":" + (page + 1)));
         }
         kb.add(nav);
@@ -674,11 +739,11 @@ public class TelegramBotService implements IBotStateListener {
 
     /** Send new or edit existing queue message; captures message_id on send. */
     private void sendOrEditQueueMessage(long chatId, long messageId,
-                                        long profileId, String text, ObjectNode markup) {
+            long profileId, String text, ObjectNode markup) {
         try {
             ObjectNode body = objectMapper.createObjectNode();
-            body.put("chat_id",    chatId);
-            body.put("text",       text);
+            body.put("chat_id", chatId);
+            body.put("text", text);
             body.put("parse_mode", "MarkdownV2");
             body.set("reply_markup", markup);
 
@@ -703,9 +768,11 @@ public class TelegramBotService implements IBotStateListener {
                         JsonNode root = objectMapper.readTree(resp.body());
                         if (root.path("ok").asBoolean()) {
                             long newId = root.path("result").path("message_id").asLong(-1);
-                            if (newId > 0) lastQueueMsgIds.put(profileId, newId);
+                            if (newId > 0)
+                                lastQueueMsgIds.put(profileId, newId);
                         }
-                    } catch (Exception ignore) {}
+                    } catch (Exception ignore) {
+                    }
                 }
             } else {
                 logger.warn("sendOrEditQueueMessage HTTP {}: {}", resp.statusCode(), resp.body());
@@ -719,18 +786,22 @@ public class TelegramBotService implements IBotStateListener {
     private List<TaskEntry> buildTaskEntries(long profileId, TaskQueue queue) {
         List<TaskEntry> list = new ArrayList<>();
         for (TpDailyTaskEnum task : TpDailyTaskEnum.values()) {
-            DTOTaskState state     = ServTaskManager.getInstance().getTaskState(profileId, task.getId());
-            boolean      scheduled = (queue != null) && queue.isTaskScheduled(task);
-            boolean      executing = (state != null) && state.isExecuting();
+            DTOTaskState state = ServTaskManager.getInstance().getTaskState(profileId, task.getId());
+            boolean scheduled = (queue != null) && queue.isTaskScheduled(task);
+            boolean executing = (state != null) && state.isExecuting();
             list.add(new TaskEntry(task, state, scheduled, executing));
         }
         list.sort((a, b) -> {
             int pa = a.isExecuting ? 0 : a.isScheduled ? 1 : 2;
             int pb = b.isExecuting ? 0 : b.isScheduled ? 1 : 2;
-            if (pa != pb) return Integer.compare(pa, pb);
-            if (a.nextDt != null && b.nextDt != null) return a.nextDt.compareTo(b.nextDt);
-            if (a.nextDt != null) return -1;
-            if (b.nextDt != null) return 1;
+            if (pa != pb)
+                return Integer.compare(pa, pb);
+            if (a.nextDt != null && b.nextDt != null)
+                return a.nextDt.compareTo(b.nextDt);
+            if (a.nextDt != null)
+                return -1;
+            if (b.nextDt != null)
+                return 1;
             return a.taskEnum.getName().compareTo(b.taskEnum.getName());
         });
         return list;
@@ -744,45 +815,73 @@ public class TelegramBotService implements IBotStateListener {
             return;
         }
         String[] parts = data.split(":");
-        if (parts.length < 1) { answerCallbackQuery(callbackId, ""); return; }
+        if (parts.length < 1) {
+            answerCallbackQuery(callbackId, "");
+            return;
+        }
         try {
             switch (parts[0]) {
                 case "pg" -> {
                     // Navigation: edit the existing message to show a different page
-                    if (parts.length < 3) { answerCallbackQuery(callbackId, ""); return; }
+                    if (parts.length < 3) {
+                        answerCallbackQuery(callbackId, "");
+                        return;
+                    }
                     answerCallbackQuery(callbackId, "");
                     long profileId = Long.parseLong(parts[1]);
-                    int  pageNum   = Integer.parseInt(parts[2]);
+                    int pageNum = Integer.parseInt(parts[2]);
                     DTOProfiles profile = findProfile(profileId);
-                    if (profile == null) { sendMessage(chatId, "❌ Profile not found."); return; }
+                    if (profile == null) {
+                        sendMessage(chatId, "❌ Profile not found.");
+                        return;
+                    }
                     TaskQueue queue = ServScheduler.getServices().getQueueManager().getQueue(profileId);
                     sendQueuePage(chatId, messageId, profile, queue, pageNum);
                 }
                 case "rem" -> {
                     // format: rem:profileId:taskId:page
-                    if (parts.length < 4) { answerCallbackQuery(callbackId, ""); return; }
+                    if (parts.length < 4) {
+                        answerCallbackQuery(callbackId, "");
+                        return;
+                    }
                     handleRemoveCallback(callbackId, chatId, messageId,
                             Long.parseLong(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
                 }
                 case "exe" -> {
                     // format: exe:profileId:taskId:page
-                    if (parts.length < 4) { answerCallbackQuery(callbackId, ""); return; }
+                    if (parts.length < 4) {
+                        answerCallbackQuery(callbackId, "");
+                        return;
+                    }
                     handleExecuteCallback(callbackId, chatId, messageId,
                             Long.parseLong(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
                 }
                 case "sch" -> {
-                    // format: sch:profileId:taskId:page  → open time-picker
-                    if (parts.length < 4) { answerCallbackQuery(callbackId, ""); return; }
+                    // format: sch:profileId:taskId:page → open time-picker
+                    if (parts.length < 4) {
+                        answerCallbackQuery(callbackId, "");
+                        return;
+                    }
                     answerCallbackQuery(callbackId, "");
                     showSchedulePicker(chatId, Long.parseLong(parts[1]),
                             Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
                 }
                 case "scht" -> {
-                    // format: scht:profileId:taskId:minutes:page  → confirm schedule
-                    if (parts.length < 5) { answerCallbackQuery(callbackId, ""); return; }
+                    // format: scht:profileId:taskId:minutes:page → confirm schedule
+                    if (parts.length < 5) {
+                        answerCallbackQuery(callbackId, "");
+                        return;
+                    }
                     handleScheduleAtCallback(callbackId, chatId,
                             Long.parseLong(parts[1]), Integer.parseInt(parts[2]),
                             Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));
+                }
+                case "prof_toggle" -> {
+                    if (parts.length < 2) {
+                        answerCallbackQuery(callbackId, "");
+                        return;
+                    }
+                    handleProfileToggleCallback(callbackId, chatId, messageId, Long.parseLong(parts[1]));
                 }
                 default -> answerCallbackQuery(callbackId, "");
             }
@@ -793,7 +892,7 @@ public class TelegramBotService implements IBotStateListener {
     }
 
     private void handleRemoveCallback(String callbackId, long chatId, long messageId,
-                                       long profileId, int taskId, int page) {
+            long profileId, int taskId, int page) {
         try {
             TpDailyTaskEnum taskEnum = TpDailyTaskEnum.fromId(taskId);
             DTOProfiles profile = findProfile(profileId);
@@ -825,7 +924,7 @@ public class TelegramBotService implements IBotStateListener {
     }
 
     private void handleExecuteCallback(String callbackId, long chatId, long messageId,
-                                        long profileId, int taskId, int page) {
+            long profileId, int taskId, int page) {
         try {
             TpDailyTaskEnum taskEnum = TpDailyTaskEnum.fromId(taskId);
             DTOProfiles profile = findProfile(profileId);
@@ -859,41 +958,43 @@ public class TelegramBotService implements IBotStateListener {
         try {
             TpDailyTaskEnum taskEnum = TpDailyTaskEnum.fromId(taskId);
             DTOProfiles profile = findProfile(profileId);
-            if (profile == null) { sendMessage(chatId, "❌ Profile not found."); return; }
+            if (profile == null) {
+                sendMessage(chatId, "❌ Profile not found.");
+                return;
+            }
 
             // ── MarkdownV2 formatted message ──────────────────────────────────
-            String text =
-                    "⏰ *Schedule Task*\n"
-                  + "──────────────────────\n"
-                  + "📌 *" + escV2(taskEnum.getName()) + "*\n"
-                  + "👤 _" + escV2(profile.getName()) + "_\n"
-                  + "──────────────────────\n"
-                  + "Select a delay:";
+            String text = "⏰ *Schedule Task*\n"
+                    + "──────────────────────\n"
+                    + "📌 *" + escV2(taskEnum.getName()) + "*\n"
+                    + "👤 _" + escV2(profile.getName()) + "_\n"
+                    + "──────────────────────\n"
+                    + "Select a delay:";
 
             // Page number is threaded through scht so the queue message is refreshed
-            // after the user picks a time.  Format: scht:profileId:taskId:minutes:page
+            // after the user picks a time. Format: scht:profileId:taskId:minutes:page
             String pfx = "scht:" + profileId + ":" + taskId + ":";
             ArrayNode kb = objectMapper.createArrayNode();
 
             // Row 1
             ArrayNode r1 = objectMapper.createArrayNode();
-            r1.add(objectMapper.createObjectNode().put("text", "▶️  Now")      .put("callback_data", pfx + "0:"   + page));
-            r1.add(objectMapper.createObjectNode().put("text", "⌛  5 min")  .put("callback_data", pfx + "5:"   + page));
-            r1.add(objectMapper.createObjectNode().put("text", "⌛  15 min") .put("callback_data", pfx + "15:"  + page));
+            r1.add(objectMapper.createObjectNode().put("text", "▶️  Now").put("callback_data", pfx + "0:" + page));
+            r1.add(objectMapper.createObjectNode().put("text", "⌛  5 min").put("callback_data", pfx + "5:" + page));
+            r1.add(objectMapper.createObjectNode().put("text", "⌛  15 min").put("callback_data", pfx + "15:" + page));
             kb.add(r1);
 
             // Row 2
             ArrayNode r2 = objectMapper.createArrayNode();
-            r2.add(objectMapper.createObjectNode().put("text", "⌛  30 min") .put("callback_data", pfx + "30:"  + page));
-            r2.add(objectMapper.createObjectNode().put("text", "⌛  1h")     .put("callback_data", pfx + "60:"  + page));
-            r2.add(objectMapper.createObjectNode().put("text", "⌛  2h")     .put("callback_data", pfx + "120:" + page));
+            r2.add(objectMapper.createObjectNode().put("text", "⌛  30 min").put("callback_data", pfx + "30:" + page));
+            r2.add(objectMapper.createObjectNode().put("text", "⌛  1h").put("callback_data", pfx + "60:" + page));
+            r2.add(objectMapper.createObjectNode().put("text", "⌛  2h").put("callback_data", pfx + "120:" + page));
             kb.add(r2);
 
             // Row 3
             ArrayNode r3 = objectMapper.createArrayNode();
-            r3.add(objectMapper.createObjectNode().put("text", "⌛  4h")     .put("callback_data", pfx + "240:" + page));
-            r3.add(objectMapper.createObjectNode().put("text", "⌛  8h")     .put("callback_data", pfx + "480:" + page));
-            r3.add(objectMapper.createObjectNode().put("text", "❌  Cancel") .put("callback_data", "noop"));
+            r3.add(objectMapper.createObjectNode().put("text", "⌛  4h").put("callback_data", pfx + "240:" + page));
+            r3.add(objectMapper.createObjectNode().put("text", "⌛  8h").put("callback_data", pfx + "480:" + page));
+            r3.add(objectMapper.createObjectNode().put("text", "❌  Cancel").put("callback_data", "noop"));
             kb.add(r3);
 
             ObjectNode markup = objectMapper.createObjectNode();
@@ -908,7 +1009,7 @@ public class TelegramBotService implements IBotStateListener {
     }
 
     private void handleScheduleAtCallback(String callbackId, long chatId,
-                                           long profileId, int taskId, int minutes, int page) {
+            long profileId, int taskId, int minutes, int page) {
         try {
             TpDailyTaskEnum taskEnum = TpDailyTaskEnum.fromId(taskId);
             DTOProfiles profile = findProfile(profileId);
@@ -962,9 +1063,209 @@ public class TelegramBotService implements IBotStateListener {
         }
     }
 
+    // ── Advanced Commands & UI Utilities
+    // ──────────────────────────────────────────
+
+    private void sendOrEditMessage(long chatId, long messageId, String text, ObjectNode markup, String parseMode) {
+        try {
+            ObjectNode body = objectMapper.createObjectNode();
+            body.put("chat_id", chatId);
+            body.put("text", text);
+            body.put("parse_mode", parseMode);
+            if (markup != null) {
+                body.set("reply_markup", markup);
+            }
+            String endpoint = (messageId < 0) ? "sendMessage" : "editMessageText";
+            if (messageId >= 0) {
+                body.put("message_id", messageId);
+            }
+            HttpRequest req = HttpRequest.newBuilder()
+                    .uri(URI.create(API_BASE + token + "/" + endpoint))
+                    .timeout(Duration.ofSeconds(10))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
+                    .build();
+            HttpResponse<String> resp = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
+            if (resp.statusCode() != 200) {
+                logger.warn("sendOrEditMessage HTTP {}: {}", resp.statusCode(), resp.body());
+            }
+        } catch (Exception e) {
+            logger.error("sendOrEditMessage failed: {}", e.getMessage());
+        }
+    }
+
+    private void handleStatsCommand(long chatId) {
+        try {
+            List<DTOProfiles> profiles = ServProfiles.getServices().getProfiles();
+            if (profiles == null || profiles.isEmpty()) {
+                sendMessage(chatId, "❌ No profiles configured.");
+                return;
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append("📈 *Bot Statistics*\n");
+            sb.append("━━━━━━━━━━━━━━━━━━━━━━\n\n");
+            for (DTOProfiles p : profiles) {
+                if (!p.getEnabled())
+                    continue;
+                sb.append("✨ *").append(escV2(p.getName())).append("*\n");
+                if (p.getCharacterName() != null && !p.getCharacterName().isEmpty()) {
+                    sb.append("👤 _").append(escV2(p.getCharacterName())).append("_\n");
+                }
+
+                cl.camodev.wosbot.ot.DTOProfileStatistics stats = ServStatistics.getServices().getStatistics(p);
+                if (stats != null && stats.getCustomCounters() != null && !stats.getCustomCounters().isEmpty()) {
+                    sb.append("\n📊 *Activity:*\n");
+                    for (java.util.Map.Entry<String, Integer> entry : stats.getCustomCounters().entrySet()) {
+                        sb.append("  ▫️ *").append(escV2(entry.getKey())).append("*: `")
+                                .append(String.valueOf(entry.getValue())).append("`\n");
+                    }
+                }
+                sb.append("\n━━━━━━━━━━━━━━━━━━━━━━\n\n");
+            }
+            if (sb.toString().endsWith("\n\n━━━━━━━━━━━━━━━━━━━━━━\n\n")) {
+                sb.setLength(sb.length() - 25);
+            }
+            sendOrEditMessage(chatId, -1L, sb.toString(), null, "MarkdownV2");
+        } catch (Exception e) {
+            logger.error("handleStatsCommand failed: {}", e.getMessage());
+            sendMessage(chatId, "❌ Error retrieving stats.");
+        }
+    }
+
+    private void handleProfilesCommand(long chatId, long messageId) {
+        try {
+            List<DTOProfiles> profiles = ServProfiles.getServices().getProfiles();
+            if (profiles == null || profiles.isEmpty()) {
+                sendMessage(chatId, "❌ No profiles configured.");
+                return;
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append("👥 *Profiles*\n");
+            sb.append("━━━━━━━━━━━━━━━━━━━━━━\n");
+            if (botCurrentlyRunning) {
+                sb.append("⚠️ _Stop the bot to enable/disable profiles_\n\n");
+            } else {
+                sb.append("💡 _Tap below to toggle_\n\n");
+            }
+            ArrayNode kb = objectMapper.createArrayNode();
+            for (DTOProfiles p : profiles) {
+                String status = p.getEnabled() ? "🟢 ON" : "🔴 OFF";
+                sb.append(status).append(" \\· *").append(escV2(p.getName())).append("*\n");
+                sb.append("      Emulator: `").append(escV2(p.getEmulatorNumber())).append("`\n\n");
+                ArrayNode row = objectMapper.createArrayNode();
+                row.add(objectMapper.createObjectNode()
+                        .put("text", (p.getEnabled() ? "Disable 🔴 " : "Enable 🟢 ") + p.getName())
+                        .put("callback_data", "prof_toggle:" + p.getId()));
+                kb.add(row);
+            }
+            ObjectNode markup = objectMapper.createObjectNode();
+            markup.set("inline_keyboard", kb);
+            sendOrEditMessage(chatId, messageId, sb.toString(), markup, "MarkdownV2");
+        } catch (Exception e) {
+            logger.error("handleProfilesCommand failed: {}", e.getMessage());
+        }
+    }
+
+    private void handleProfileToggleCallback(String callbackId, long chatId, long messageId, long profileId) {
+        if (botCurrentlyRunning) {
+            answerCallbackQuery(callbackId, "❌ Stop bot before toggling");
+            return;
+        }
+        DTOProfiles profile = findProfile(profileId);
+        if (profile == null) {
+            answerCallbackQuery(callbackId, "❌ Profile not found");
+            return;
+        }
+        profile.setEnabled(!profile.getEnabled());
+        ServProfiles.getServices().saveProfile(profile);
+        answerCallbackQuery(callbackId,
+                "✅ " + profile.getName() + " " + (profile.getEnabled() ? "enabled" : "disabled"));
+        handleProfilesCommand(chatId, messageId);
+    }
+
+    private void handleRebootCommand(long chatId) {
+        try {
+            sendMessage(chatId, "🔄 Restarting...");
+
+            try {
+                ServScheduler.getServices().stopBot();
+            } catch (Exception ex) {
+                logger.warn("Reboot: stopBot soft handled: {}", ex.getMessage());
+            }
+            Thread.sleep(1500);
+
+            List<DTOProfiles> profiles = ServProfiles.getServices().getProfiles();
+            if (profiles != null) {
+                for (DTOProfiles p : profiles) {
+                    if (p.getEnabled()) {
+                        String emu = p.getEmulatorNumber();
+                        try {
+                            if (emu != null && !emu.trim().isEmpty()) {
+                                EmulatorManager.getInstance().closeEmulator(emu);
+                            }
+                        } catch (Exception ex) {
+                            logger.warn("Reboot: Emulator close soft handled: {}", ex.getMessage());
+                        }
+                        Thread.sleep(1000);
+                    }
+                }
+            }
+
+            ServScheduler.getServices().startBot();
+            sendMessage(chatId, "✅ Restarted.");
+
+        } catch (Exception e) {
+            logger.error("handleRebootCommand failed", e);
+            sendMessage(chatId, "❌ Reboot failed: " + e.getMessage());
+        }
+    }
+
+    private void handleLogsCommand(long chatId) {
+        String logPath = "log/bot.log";
+        sendDocument(chatId, logPath);
+    }
+
+    private void sendDocument(long chatId, String filePath) {
+        try {
+            java.io.File file = new java.io.File(filePath);
+            if (!file.exists()) {
+                sendMessage(chatId, "❌ Log file not found at " + filePath);
+                return;
+            }
+            String boundary = "TelegramBotBoundary" + System.currentTimeMillis();
+            byte[] header = ("--" + boundary + "\r\n"
+                    + "Content-Disposition: form-data; name=\"chat_id\"\r\n\r\n"
+                    + chatId + "\r\n"
+                    + "--" + boundary + "\r\n"
+                    + "Content-Disposition: form-data; name=\"document\"; filename=\"" + file.getName() + "\"\r\n"
+                    + "Content-Type: text/plain\r\n\r\n").getBytes(StandardCharsets.UTF_8);
+            byte[] footer = ("\r\n--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8);
+            byte[] fileBytes = java.nio.file.Files.readAllBytes(file.toPath());
+            byte[] body = new byte[header.length + fileBytes.length + footer.length];
+            System.arraycopy(header, 0, body, 0, header.length);
+            System.arraycopy(fileBytes, 0, body, header.length, fileBytes.length);
+            System.arraycopy(footer, 0, body, header.length + fileBytes.length, footer.length);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(API_BASE + token + "/sendDocument"))
+                    .timeout(Duration.ofSeconds(60))
+                    .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(body))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                logger.warn("sendDocument HTTP {}: {}", response.statusCode(), response.body());
+                sendMessage(chatId, "❌ Telegram rejected the document.");
+            }
+        } catch (Exception e) {
+            logger.error("sendDocument error: {}", e.getMessage());
+            sendMessage(chatId, "❌ Error sending Document: " + e.getMessage());
+        }
+    }
+
     private DTOProfiles findProfile(long profileId) {
         List<DTOProfiles> all = ServProfiles.getServices().getProfiles();
-        if (all == null) return null;
+        if (all == null)
+            return null;
         return all.stream()
                 .filter(p -> p.getId() != null && p.getId() == profileId)
                 .findFirst().orElse(null);
@@ -974,7 +1275,8 @@ public class TelegramBotService implements IBotStateListener {
         try {
             ObjectNode body = objectMapper.createObjectNode();
             body.put("callback_query_id", callbackQueryId);
-            if (text != null && !text.isBlank()) body.put("text", text);
+            if (text != null && !text.isBlank())
+                body.put("text", text);
             HttpRequest req = HttpRequest.newBuilder()
                     .uri(URI.create(API_BASE + token + "/answerCallbackQuery"))
                     .timeout(Duration.ofSeconds(5))
@@ -990,8 +1292,8 @@ public class TelegramBotService implements IBotStateListener {
     private void sendMessageWithMarkup(long chatId, String text, ObjectNode markup) {
         try {
             ObjectNode body = objectMapper.createObjectNode();
-            body.put("chat_id",    chatId);
-            body.put("text",       text);
+            body.put("chat_id", chatId);
+            body.put("text", text);
             body.put("parse_mode", "Markdown");
             body.set("reply_markup", markup);
             HttpRequest req = HttpRequest.newBuilder()
@@ -1006,43 +1308,49 @@ public class TelegramBotService implements IBotStateListener {
         }
     }
 
-    /** Escape for Telegram legacy Markdown v1 (used in simple sendMessage calls). */
+    /**
+     * Escape for Telegram legacy Markdown v1 (used in simple sendMessage calls).
+     */
     private static String escMd(String text) {
-        if (text == null) return "";
+        if (text == null)
+            return "";
         return text.replace("_", "\\_").replace("*", "\\*").replace("`", "\\`").replace("[", "\\[");
     }
 
     /**
      * Escape all reserved characters for Telegram MarkdownV2.
-     * Required before embedding any user-supplied or dynamic text in a MarkdownV2 message.
+     * Required before embedding any user-supplied or dynamic text in a MarkdownV2
+     * message.
      */
     private static String escV2(String text) {
-        if (text == null) return "";
+        if (text == null)
+            return "";
         // Order matters: backslash must be first
         return text
                 .replace("\\", "\\\\")
-                .replace("_",  "\\_")
-                .replace("*",  "\\*")
-                .replace("[",  "\\[")
-                .replace("]",  "\\]")
-                .replace("(",  "\\(")
-                .replace(")",  "\\)")
-                .replace("~",  "\\~")
-                .replace("`",  "\\`")
-                .replace(">",  "\\>")
-                .replace("#",  "\\#")
-                .replace("+",  "\\+")
-                .replace("-",  "\\-")
-                .replace("=",  "\\=")
-                .replace("|",  "\\|")
-                .replace("{",  "\\{")
-                .replace("}",  "\\}")
-                .replace(".",  "\\.")
-                .replace("!",  "\\!");
+                .replace("_", "\\_")
+                .replace("*", "\\*")
+                .replace("[", "\\[")
+                .replace("]", "\\]")
+                .replace("(", "\\(")
+                .replace(")", "\\)")
+                .replace("~", "\\~")
+                .replace("`", "\\`")
+                .replace(">", "\\>")
+                .replace("#", "\\#")
+                .replace("+", "\\+")
+                .replace("-", "\\-")
+                .replace("=", "\\=")
+                .replace("|", "\\|")
+                .replace("{", "\\{")
+                .replace("}", "\\}")
+                .replace(".", "\\.")
+                .replace("!", "\\!");
     }
 
     private static String fmtMinutes(int minutes) {
-        if (minutes < 60) return minutes + " min";
+        if (minutes < 60)
+            return minutes + " min";
         int h = minutes / 60, m = minutes % 60;
         return (m == 0) ? h + "h" : h + "h " + m + "m";
     }
@@ -1051,18 +1359,18 @@ public class TelegramBotService implements IBotStateListener {
 
     private static class TaskEntry {
         final TpDailyTaskEnum taskEnum;
-        final boolean         isScheduled;
-        final boolean         isExecuting;
-        final LocalDateTime   nextDt;
-        final String          statusIcon;
-        final String          lastStr;
-        final String          nextStr;
+        final boolean isScheduled;
+        final boolean isExecuting;
+        final LocalDateTime nextDt;
+        final String statusIcon;
+        final String lastStr;
+        final String nextStr;
 
         TaskEntry(TpDailyTaskEnum taskEnum, DTOTaskState state, boolean scheduled, boolean executing) {
-            this.taskEnum    = taskEnum;
+            this.taskEnum = taskEnum;
             this.isScheduled = scheduled;
             this.isExecuting = executing;
-            this.nextDt      = (state != null) ? state.getNextExecutionTime() : null;
+            this.nextDt = (state != null) ? state.getNextExecutionTime() : null;
             LocalDateTime last = (state != null) ? state.getLastExecutionTime() : null;
 
             long secsUntil = (nextDt != null)
@@ -1070,32 +1378,40 @@ public class TelegramBotService implements IBotStateListener {
                     : Long.MAX_VALUE;
 
             this.lastStr = formatAgo(last);
-            this.nextStr = executing        ? "Executing…"
-                         : (nextDt == null) ? "Never"
-                         : (secsUntil <= 0) ? "Ready"
-                         : fmtCountdown(secsUntil);
+            this.nextStr = executing ? "Executing…"
+                    : (nextDt == null) ? "Never"
+                            : (secsUntil <= 0) ? "Ready"
+                                    : fmtCountdown(secsUntil);
 
-            this.statusIcon = executing                       ? "🔄"
-                            : (scheduled && secsUntil <= 0)  ? "🟢"
-                            : scheduled                      ? "🟡"
-                            : (nextDt != null)               ? "🔵"
-                            :                                  "⬜";
+            this.statusIcon = executing ? "🔄"
+                    : (scheduled && secsUntil <= 0) ? "🟢"
+                            : scheduled ? "🟡"
+                                    : (nextDt != null) ? "🔵"
+                                            : "⬜";
         }
 
         private static String formatAgo(LocalDateTime dt) {
-            if (dt == null) return "—";
+            if (dt == null)
+                return "—";
             long s = java.time.temporal.ChronoUnit.SECONDS.between(dt, LocalDateTime.now());
-            if (s < 0)     return "Future";
-            if (s < 60)    return s + "s ago";
-            if (s < 3600)  return (s / 60) + "m ago";
-            if (s < 86400) return (s / 3600) + "h " + ((s % 3600) / 60) + "m ago";
+            if (s < 0)
+                return "Future";
+            if (s < 60)
+                return s + "s ago";
+            if (s < 3600)
+                return (s / 60) + "m ago";
+            if (s < 86400)
+                return (s / 3600) + "h " + ((s % 3600) / 60) + "m ago";
             return (s / 86400) + "d ago";
         }
 
         static String fmtCountdown(long secs) {
-            if (secs < 60)    return secs + "s";
-            if (secs < 3600)  return (secs / 60) + "m";
-            if (secs < 86400) return (secs / 3600) + "h " + ((secs % 3600) / 60) + "m";
+            if (secs < 60)
+                return secs + "s";
+            if (secs < 3600)
+                return (secs / 60) + "m";
+            if (secs < 86400)
+                return (secs / 3600) + "h " + ((secs % 3600) / 60) + "m";
             long d = secs / 86400;
             return d + "d " + ((secs % 86400) / 3600) + "h";
         }
