@@ -77,7 +77,6 @@ public class IntelligenceTask extends DelayedTask {
 
 	@Override
 	protected void execute() {
-		logInfo("Starting Intel task.");
 
 		// Load configuration fresh after profile refresh
 		loadConfiguration();
@@ -160,7 +159,6 @@ public class IntelligenceTask extends DelayedTask {
 			handleRescheduling(anyIntelProcessed, nonBeastIntelProcessed, marchesAvailable);
 		}
 
-		logInfo("Intel Task finished");
 	}
 
 	/**

@@ -472,8 +472,6 @@ public class AllianceMobilizationTask extends DelayedTask {
         initializeOCRHelpers();
         loadConfiguration();
 
-        logInfo("Starting Alliance Mobilization task execution");
-
         if (!navigateWithRetry()) {
             handleNavigationFailure();
             return;
@@ -491,7 +489,6 @@ public class AllianceMobilizationTask extends DelayedTask {
             applyFallbackReschedule();
         }
 
-        logInfo("Alliance Mobilization - Task completed");
     }
 
     /**

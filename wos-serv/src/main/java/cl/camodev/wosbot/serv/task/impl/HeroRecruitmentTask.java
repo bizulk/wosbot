@@ -128,7 +128,6 @@ public class HeroRecruitmentTask extends DelayedTask {
      */
     @Override
     protected void execute() {
-        logInfo("Starting hero recruitment task");
 
         navigateToHeroRecruitment();
 

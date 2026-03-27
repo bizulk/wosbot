@@ -59,7 +59,6 @@ public class LifeEssenceTask extends DelayedTask {
 
 	@Override
 	protected void execute() {
-		logInfo("=== Starting Life Essence Task ===");
 
 		// Load configuration
 		loadConfiguration();

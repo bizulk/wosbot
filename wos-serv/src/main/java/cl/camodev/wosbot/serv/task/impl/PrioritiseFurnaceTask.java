@@ -44,7 +44,6 @@ public class PrioritiseFurnaceTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("Starting Prioritise Furnace task");
 
         DTOImageSearchResult worldResult = templateSearchHelper.searchTemplate(GAME_HOME_WORLD,
                 SearchConfigConstants.DEFAULT_SINGLE);

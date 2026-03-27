@@ -20,7 +20,6 @@ public class NewSurvivorsTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("Starting the New Survivors task.");
 
         // I need to search for New Survivors Template
         logInfo("Searching for the 'New Survivors' notification.");

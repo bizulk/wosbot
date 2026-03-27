@@ -151,7 +151,6 @@ public class ExpertsAgnesIntelTask extends DelayedTask {
      */
     @Override
     protected void execute() {
-        logInfo("Attempting to claim extra intel from Agnes");
 
         intelScreenHelper.ensureOnIntelScreen();
 
@@ -163,7 +162,6 @@ public class ExpertsAgnesIntelTask extends DelayedTask {
         }
 
         rescheduleToGameReset();
-        logInfo("Agnes intel task completed");
     }
 
     // ========================================================================

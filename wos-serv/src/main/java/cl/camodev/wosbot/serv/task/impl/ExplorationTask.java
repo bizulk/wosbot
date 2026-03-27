@@ -19,7 +19,6 @@ public class ExplorationTask extends DelayedTask {
 
 	@Override
 	protected void execute() {
-		logInfo("Starting exploration task.");
 		tapRandomPoint(new DTOPoint(40, 1190), new DTOPoint(100, 1250));
 		sleepTask(500);
 		DTOImageSearchResult claimResult = templateSearchHelper.searchTemplate(
@@ -48,7 +47,7 @@ public class ExplorationTask extends DelayedTask {
 			Integer minutes = profile.getConfig(EnumConfigurationKey.INT_EXPLORATION_CHEST_OFFSET, Integer.class);
 			LocalDateTime nextSchedule = LocalDateTime.now().plusMinutes(minutes);
 			this.reschedule(nextSchedule);
-			logInfo("Exploration task completed. Next execution scheduled in " + minutes + " minutes.");
+			logInfo("Next execution scheduled in " + minutes + " minutes.");
 
 		}
 		tapBackButton();

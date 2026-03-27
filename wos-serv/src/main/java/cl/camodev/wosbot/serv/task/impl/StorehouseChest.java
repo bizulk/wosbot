@@ -122,8 +122,6 @@ public class StorehouseChest extends DelayedTask {
         loadConfiguration();
         resetExecutionState();
 
-        logInfo("Starting Storehouse task.");
-
         if (!openStorehouse()) {
             logWarning("Failed to open Storehouse.");
             reschedule(LocalDateTime.now().plusMinutes(FALLBACK_RESCHEDULE_MINUTES));
@@ -138,7 +136,6 @@ public class StorehouseChest extends DelayedTask {
 
         scheduleToNearestTime();
 
-        logInfo("Storehouse task completed successfully.");
     }
 
     /**

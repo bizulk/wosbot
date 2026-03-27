@@ -74,8 +74,6 @@ public class WarAcademyTask extends DelayedTask {
     @Override
     protected void execute() {
 
-        logInfo("Starting War Academy task.");
-
         if (!navigateToWarAcademy()) {
             logWarning("Failed to navigate to War Academy.");
             reschedule(LocalDateTime.now().plusMinutes(RETRY_DELAY_MINUTES));

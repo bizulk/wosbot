@@ -86,7 +86,6 @@ public class TundraTruckEventTask extends DelayedTask {
 
 	@Override
 	protected void execute() {
-		logInfo("=== Starting Tundra Truck Event Task ===");
 
 		// Load configuration
 		loadConfiguration();
@@ -128,7 +127,7 @@ public class TundraTruckEventTask extends DelayedTask {
 
 		// All navigation attempts failed
 		logWarning("Could not find Tundra Truck event after " + MAX_NAVIGATION_ATTEMPTS +
-				" attempts. Rescheduling for next activation time.");
+				" attempts.");
 		rescheduleWithActivationTime();
 	}
 

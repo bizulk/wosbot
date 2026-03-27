@@ -138,7 +138,6 @@ public class BankTask extends DelayedTask {
 	 */
 	@Override
 	protected void execute() {
-		logInfo("Starting bank task");
 
 		loadBankConfiguration();
 

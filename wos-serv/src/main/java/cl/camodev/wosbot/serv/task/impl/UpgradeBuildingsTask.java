@@ -54,7 +54,6 @@ public class UpgradeBuildingsTask extends DelayedTask {
      */
     @Override
     protected void execute() {
-        logInfo("Starting Upgrade Minor Buildings task");
 
         // Navigate to city view
         navigateToCityView();

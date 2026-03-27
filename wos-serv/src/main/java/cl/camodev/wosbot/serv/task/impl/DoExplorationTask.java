@@ -20,7 +20,6 @@ public class DoExplorationTask extends DelayedTask {
     @Override
 
     protected void execute() {
-        logInfo("Starting Do Exploration task...");
 
         tapRandomPoint(new DTOPoint(40, 1190), new DTOPoint(100, 1250));
         sleepTask(500);
@@ -79,11 +78,10 @@ public class DoExplorationTask extends DelayedTask {
                 }
             }
 
-            logInfo("Exploration loop ended. Rescheduling.");
             this.reschedule(LocalDateTime.now().plusHours(1));
 
         } else {
-            logWarning("Exploration button not found. Stopping task.");
+            logWarning("Exploration button not found");
             this.reschedule(LocalDateTime.now().plusHours(1));
         }
     }

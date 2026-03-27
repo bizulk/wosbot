@@ -39,7 +39,6 @@ public class ResearchTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("Starting Research task...");
 
         // Ensure we start on the HOME screen before doing anything else
         navigationHelper.ensureCorrectScreenLocation(EnumStartLocation.HOME);
@@ -314,7 +313,6 @@ public class ResearchTask extends DelayedTask {
             }
         }
 
-        logInfo("Research task ended. Rescheduling in 1 hour.");
         this.reschedule(LocalDateTime.now().plusHours(1));
     }
 }

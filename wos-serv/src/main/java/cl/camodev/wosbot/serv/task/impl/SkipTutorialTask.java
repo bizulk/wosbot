@@ -55,7 +55,6 @@ public class SkipTutorialTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("Starting Skip Tutorial Task...");
 
         // Ensure emulator and game are running since InitializeTask might have been skipped
         ensureEmulatorRunning();
@@ -129,6 +128,5 @@ public class SkipTutorialTask extends DelayedTask {
             
         }
         
-        logInfo("Finishing Skip Tutorial Task.");
     }
 }

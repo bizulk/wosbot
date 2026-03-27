@@ -38,7 +38,6 @@ public class HeroMissionEventTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("=== Starting Hero's Mission ===");
 
         flagNumber = profile.getConfig(EnumConfigurationKey.HERO_MISSION_FLAG_INT, Integer.class);
         useFlag = flagNumber > 0;

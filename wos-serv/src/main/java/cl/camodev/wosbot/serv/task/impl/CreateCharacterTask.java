@@ -66,7 +66,6 @@ public class CreateCharacterTask extends DelayedTask {
 
     @Override
     protected void execute() {
-        logInfo("Start");
 
         Integer maxAgeMinutes = profile.getConfig(
                 EnumConfigurationKey.CREATE_CHARACTER_MAX_AGE_MINUTES_INT,
