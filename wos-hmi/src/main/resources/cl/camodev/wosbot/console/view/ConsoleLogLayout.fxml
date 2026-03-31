@@ -45,15 +45,15 @@
       <TableView fx:id="tableviewLogMessages" VBox.vgrow="ALWAYS"
                  maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
         <columns>
-          <TableColumn fx:id="columnTimeStamp" editable="false" maxWidth="160.0" minWidth="160.0"
-                       prefWidth="160.0" resizable="false" sortable="false" text="TIMESTAMP (UTC)" />
-          <TableColumn fx:id="columnLevel" editable="false" maxWidth="70.0" minWidth="70.0"
+          <TableColumn fx:id="columnTimeStamp" editable="false" minWidth="80.0"
+                       prefWidth="160.0" sortable="false" text="TIMESTAMP (UTC)" />
+          <TableColumn fx:id="columnLevel" editable="false" minWidth="40.0"
                        prefWidth="70.0" sortable="false" text="LEVEL" />
           <TableColumn fx:id="columnMessage" editable="false" maxWidth="1.7976931348623157E308"
-                       prefWidth="196.0" sortable="false" text="MESSAGE" />
-          <TableColumn fx:id="columnProfile" editable="false" maxWidth="110.0" minWidth="110.0"
+                       minWidth="60.0" prefWidth="196.0" sortable="false" text="MESSAGE" />
+          <TableColumn fx:id="columnProfile" editable="false" minWidth="50.0"
                        prefWidth="110.0" sortable="false" text="PROFILE" />
-          <TableColumn fx:id="columnTask" editable="false" maxWidth="140.0" minWidth="140.0"
+          <TableColumn fx:id="columnTask" editable="false" minWidth="50.0"
                        prefWidth="140.0" sortable="false" text="TASK" />
         </columns>
         <columnResizePolicy>

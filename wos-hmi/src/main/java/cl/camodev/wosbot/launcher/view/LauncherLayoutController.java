@@ -130,6 +130,21 @@ public class LauncherLayoutController implements IProfileLoadListener, IStaminaC
     @FXML
     private VBox sidebarHeader;
 
+    // Custom Title Bar FXML
+    @FXML private javafx.scene.layout.StackPane titleBar;
+    @FXML private javafx.scene.control.Label labelWindowTitle;
+    @FXML private javafx.scene.control.Button btnMinimize;
+    @FXML private javafx.scene.control.Button btnMaximize;
+    @FXML private javafx.scene.control.Button btnClose;
+
+    private double xOffset = 0;
+    private double yOffset = 0;
+    // Window snap state tracking
+    private boolean isCustomMaximized = false;
+    private double restoreX, restoreY, restoreW, restoreH;
+    // Snap preview overlay window
+    private javafx.stage.Stage snapPreviewStage;
+
     @FXML
     private FontIcon iconDiscord;
 
@@ -581,7 +596,12 @@ public class LauncherLayoutController implements IProfileLoadListener, IStaminaC
                 currentProfile.getName(),
                 stamina);
 
-        Platform.runLater(() -> stage.setTitle(title));
+        Platform.runLater(() -> {
+            stage.setTitle(title);
+            if (labelWindowTitle != null) {
+                labelWindowTitle.setText(title);
+            }
+        });
     }
 
     public void onBotStateChange(DTOBotState botState) {
@@ -643,6 +663,205 @@ public class LauncherLayoutController implements IProfileLoadListener, IStaminaC
 
         refreshPauseMenuItems();
         updatePauseButtonState();
+    }
+
+    // ==================== CUSTOM TITLE BAR EVENT HANDLERS ====================
+
+    private static final int SNAP_THRESHOLD = 8; // pixels from screen edge to trigger snap
+
+    @FXML
+    private void handleTitleBarMousePressed(javafx.scene.input.MouseEvent event) {
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    @FXML
+    private void handleTitleBarMouseDragged(javafx.scene.input.MouseEvent event) {
+        // If currently maximized/snapped, un-snap first, then start dragging
+        if (isCustomMaximized) {
+            double oldW = stage.getWidth();
+            isCustomMaximized = false;
+            btnMaximize.setText("☐");
+            // Reposition so the cursor stays proportionally in the restored window
+            double ratio = xOffset / oldW;
+            stage.setWidth(restoreW);
+            stage.setHeight(restoreH);
+            xOffset = restoreW * ratio;
+            stage.setX(event.getScreenX() - xOffset);
+            stage.setY(event.getScreenY() - yOffset);
+            hideSnapPreview();
+            return;
+        }
+        stage.setX(event.getScreenX() - xOffset);
+        stage.setY(event.getScreenY() - yOffset);
+
+        // Show/update snap preview overlay
+        double screenX = event.getScreenX();
+        double screenY = event.getScreenY();
+        javafx.geometry.Rectangle2D bounds = getScreenBoundsForPoint(screenX, screenY);
+        if (bounds != null) {
+            if (screenY <= bounds.getMinY() + SNAP_THRESHOLD) {
+                showSnapPreview(bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), bounds.getHeight());
+            } else if (screenX <= bounds.getMinX() + SNAP_THRESHOLD) {
+                showSnapPreview(bounds.getMinX(), bounds.getMinY(), bounds.getWidth() / 2, bounds.getHeight());
+            } else if (screenX >= bounds.getMaxX() - SNAP_THRESHOLD) {
+                showSnapPreview(bounds.getMinX() + bounds.getWidth() / 2, bounds.getMinY(), bounds.getWidth() / 2, bounds.getHeight());
+            } else {
+                hideSnapPreview();
+            }
+        }
+    }
+
+    @FXML
+    private void handleTitleBarMouseReleased(javafx.scene.input.MouseEvent event) {
+        hideSnapPreview();
+        if (isCustomMaximized) return; // already snapped, don't re-snap
+        double screenX = event.getScreenX();
+        double screenY = event.getScreenY();
+        javafx.geometry.Rectangle2D screenBounds = getScreenBoundsForPoint(screenX, screenY);
+        if (screenBounds == null) return;
+
+        // Save restore bounds before snapping
+        restoreX = stage.getX();
+        restoreY = stage.getY();
+        restoreW = stage.getWidth();
+        restoreH = stage.getHeight();
+
+        // Snap to top edge = maximize to visual bounds
+        if (screenY <= screenBounds.getMinY() + SNAP_THRESHOLD) {
+            snapToFull(screenBounds);
+        }
+        // Snap to left edge = left half
+        else if (screenX <= screenBounds.getMinX() + SNAP_THRESHOLD) {
+            snapToLeft(screenBounds);
+        }
+        // Snap to right edge = right half
+        else if (screenX >= screenBounds.getMaxX() - SNAP_THRESHOLD) {
+            snapToRight(screenBounds);
+        }
+    }
+
+    /** Show a semi-transparent blue snap preview at the given position/size. */
+    private void showSnapPreview(double x, double y, double w, double h) {
+        if (snapPreviewStage == null) {
+            snapPreviewStage = new javafx.stage.Stage();
+            snapPreviewStage.initStyle(javafx.stage.StageStyle.TRANSPARENT);
+            snapPreviewStage.initOwner(stage);
+            snapPreviewStage.setAlwaysOnTop(true);
+
+            javafx.scene.layout.Region previewPane = new javafx.scene.layout.Region();
+            previewPane.setStyle(
+                "-fx-background-color: rgba(0, 120, 215, 0.3);" +
+                "-fx-border-color: rgba(0, 120, 215, 0.8);" +
+                "-fx-border-width: 2;" +
+                "-fx-border-radius: 8;" +
+                "-fx-background-radius: 8;"
+            );
+            javafx.scene.Scene previewScene = new javafx.scene.Scene(previewPane, w, h);
+            previewScene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+            snapPreviewStage.setScene(previewScene);
+        }
+        snapPreviewStage.setX(x);
+        snapPreviewStage.setY(y);
+        snapPreviewStage.setWidth(w);
+        snapPreviewStage.setHeight(h);
+        if (!snapPreviewStage.isShowing()) {
+            snapPreviewStage.show();
+        }
+        // Ensure main window stays focused
+        stage.requestFocus();
+    }
+
+    /** Hide and clean up the snap preview overlay. */
+    private void hideSnapPreview() {
+        if (snapPreviewStage != null && snapPreviewStage.isShowing()) {
+            snapPreviewStage.hide();
+        }
+    }
+
+    @FXML
+    private void handleTitleBarMouseClicked(javafx.scene.input.MouseEvent event) {
+        if (event.getClickCount() == 2) {
+            handleMaximize(null);
+        }
+    }
+
+    /** Snap window to fill the entire visual bounds (respects taskbar). */
+    private void snapToFull(javafx.geometry.Rectangle2D bounds) {
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());
+        isCustomMaximized = true;
+        btnMaximize.setText("❐");
+    }
+
+    /** Snap window to fill the left half of the screen. */
+    private void snapToLeft(javafx.geometry.Rectangle2D bounds) {
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth() / 2);
+        stage.setHeight(bounds.getHeight());
+        isCustomMaximized = true;
+        btnMaximize.setText("❐");
+    }
+
+    /** Snap window to fill the right half of the screen. */
+    private void snapToRight(javafx.geometry.Rectangle2D bounds) {
+        stage.setX(bounds.getMinX() + bounds.getWidth() / 2);
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth() / 2);
+        stage.setHeight(bounds.getHeight());
+        isCustomMaximized = true;
+        btnMaximize.setText("❐");
+    }
+
+    /** Find which screen contains the given point to get its visual bounds. */
+    private javafx.geometry.Rectangle2D getScreenBoundsForPoint(double x, double y) {
+        for (javafx.stage.Screen screen : javafx.stage.Screen.getScreens()) {
+            javafx.geometry.Rectangle2D bounds = screen.getVisualBounds();
+            if (x >= bounds.getMinX() && x <= bounds.getMaxX() &&
+                y >= bounds.getMinY() && y <= bounds.getMaxY()) {
+                return bounds;
+            }
+        }
+        // Fallback to primary screen
+        return javafx.stage.Screen.getPrimary().getVisualBounds();
+    }
+
+    @FXML
+    private void handleMinimize(ActionEvent event) {
+        stage.setIconified(true);
+    }
+
+    @FXML
+    private void handleMaximize(ActionEvent event) {
+        if (isCustomMaximized) {
+            // Restore from snap/maximize
+            isCustomMaximized = false;
+            stage.setX(restoreX);
+            stage.setY(restoreY);
+            stage.setWidth(restoreW);
+            stage.setHeight(restoreH);
+            btnMaximize.setText("☐");
+        } else {
+            // Save current bounds for restore
+            restoreX = stage.getX();
+            restoreY = stage.getY();
+            restoreW = stage.getWidth();
+            restoreH = stage.getHeight();
+            javafx.geometry.Rectangle2D bounds = getScreenBoundsForPoint(
+                stage.getX() + stage.getWidth() / 2,
+                stage.getY() + stage.getHeight() / 2
+            );
+            snapToFull(bounds);
+        }
+    }
+
+    @FXML
+    private void handleClose(ActionEvent event) {
+        stage.getOnCloseRequest().handle(null);
+        stage.close();
     }
 
     @FXML

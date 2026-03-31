@@ -6,7 +6,32 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+            maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+            style="-fx-background-color: #11141a; -fx-border-color: #30363d; -fx-border-width: 1;">
+
+    <!-- ======================== TOP: CUSTOM TITLE BAR ======================== -->
+    <top>
+        <StackPane fx:id="titleBar" minHeight="32" prefHeight="32" maxHeight="32"
+                   styleClass="custom-title-bar"
+                   onMousePressed="#handleTitleBarMousePressed"
+                   onMouseDragged="#handleTitleBarMouseDragged"
+                   onMouseReleased="#handleTitleBarMouseReleased"
+                   onMouseClicked="#handleTitleBarMouseClicked">
+
+            <!-- Title: always perfectly centered in the bar -->
+            <Label fx:id="labelWindowTitle" text="Whiteout Survival Bot"
+                   styleClass="title-bar-text"
+                   StackPane.alignment="CENTER"
+                   mouseTransparent="true" />
+
+            <!-- Window Controls: pinned to right, non-blocking for drag -->
+            <HBox alignment="CENTER_RIGHT" StackPane.alignment="CENTER_RIGHT" styleClass="title-bar-controls">
+                <Button fx:id="btnMinimize" text="—" styleClass="title-bar-btn" onAction="#handleMinimize" focusTraversable="false" />
+                <Button fx:id="btnMaximize" text="☐" styleClass="title-bar-btn" onAction="#handleMaximize" focusTraversable="false" />
+                <Button fx:id="btnClose" text="✕" styleClass="title-bar-btn, title-bar-close" onAction="#handleClose" focusTraversable="false" />
+            </HBox>
+        </StackPane>
+    </top>
 
     <!-- ======================== LEFT: SIDEBAR ======================== -->
     <left>

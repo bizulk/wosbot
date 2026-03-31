@@ -45,22 +45,22 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
          <columns>
-            <TableColumn fx:id="columnEnabled" maxWidth="90.0" minWidth="90.0"
-                         prefWidth="90.0" resizable="false" text="ENABLED" style="-fx-alignment: CENTER;" />
-            <TableColumn fx:id="columnEmulatorNumber" maxWidth="80.0" minWidth="80.0"
-                         prefWidth="80.0" resizable="false" text="EMULATOR" style="-fx-alignment: CENTER;" />
-            <TableColumn fx:id="columnFurnaceLevel" maxWidth="120.0" minWidth="120.0"
-                         prefWidth="120.0" resizable="false" text="FURNACE LEVEL" style="-fx-alignment: CENTER;" />
+            <TableColumn fx:id="columnEnabled" minWidth="50.0"
+                         prefWidth="90.0" text="ENABLED" style="-fx-alignment: CENTER;" />
+            <TableColumn fx:id="columnEmulatorNumber" minWidth="40.0"
+                         prefWidth="80.0" text="EMULATOR" style="-fx-alignment: CENTER;" />
+            <TableColumn fx:id="columnFurnaceLevel" minWidth="60.0"
+                         prefWidth="120.0" text="FURNACE LEVEL" style="-fx-alignment: CENTER;" />
             <TableColumn fx:id="columnProfileName" maxWidth="1.7976931348623157E308"
-                         prefWidth="200.0" text="NAME" style="-fx-alignment: CENTER;" />
-            <TableColumn fx:id="columnPriority" maxWidth="90.0" minWidth="90.0"
-                         prefWidth="90.0" resizable="false" text="PRIORITY" style="-fx-alignment: CENTER;" />
-            <TableColumn fx:id="columnStatus" maxWidth="200.0" minWidth="200.0"
-                         prefWidth="200.0" resizable="false" text="STATUS" style="-fx-alignment: CENTER;" />
-            <TableColumn fx:id="columnStamina" maxWidth="90.0" minWidth="90.0"
-                         prefWidth="90.0" resizable="false" text="STAMINA" style="-fx-alignment: CENTER;" />
-            <TableColumn fx:id="columnDelete" maxWidth="140.0" minWidth="140.0"
-                         prefWidth="140.0" resizable="false" text="ACTIONS" style="-fx-alignment: CENTER;" />
+                         minWidth="60.0" prefWidth="200.0" text="NAME" style="-fx-alignment: CENTER;" />
+            <TableColumn fx:id="columnPriority" minWidth="40.0"
+                         prefWidth="90.0" text="PRIORITY" style="-fx-alignment: CENTER;" />
+            <TableColumn fx:id="columnStatus" minWidth="60.0"
+                         prefWidth="200.0" text="STATUS" style="-fx-alignment: CENTER;" />
+            <TableColumn fx:id="columnStamina" minWidth="40.0"
+                         prefWidth="90.0" text="STAMINA" style="-fx-alignment: CENTER;" />
+            <TableColumn fx:id="columnDelete" minWidth="60.0"
+                         prefWidth="140.0" text="ACTIONS" style="-fx-alignment: CENTER;" />
          </columns>
       </TableView>
 

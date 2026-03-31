@@ -951,3 +951,55 @@
     -fx-scale-x: 0.95;
     -fx-scale-y: 0.95;
 }
+
+/* ---------------------------------------------------------------------------
+ * CUSTOM TITLE BAR
+ * --------------------------------------------------------------------------- */
+.custom-title-bar {
+    -fx-background-color: #1E1E1E;
+    -fx-padding: 0;
+}
+
+.title-bar-text {
+    -fx-text-fill: #e6edf3;
+    -fx-font-size: 13px;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-weight: normal;
+}
+
+.title-bar-controls {
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.title-bar-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #e6edf3;
+    -fx-font-size: 13px;
+    -fx-padding: 0;
+    -fx-min-width: 46;
+    -fx-max-width: 46;
+    -fx-min-height: 32;
+    -fx-max-height: 32;
+    -fx-cursor: default;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+.title-bar-btn:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+.title-bar-btn:pressed {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Close button hover state is red */
+.title-bar-close:hover {
+    -fx-background-color: #e81123;
+    -fx-text-fill: white;
+}
+
+.title-bar-close:pressed {
+    -fx-background-color: #f1707a;
+}
