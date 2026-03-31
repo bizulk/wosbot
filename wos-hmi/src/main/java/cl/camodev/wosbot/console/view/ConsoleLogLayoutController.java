@@ -31,6 +31,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
 public class ConsoleLogLayoutController implements IProfileDataChangeListener {
@@ -48,7 +49,13 @@ public class ConsoleLogLayoutController implements IProfileDataChangeListener {
 	private ComboBox<String> comboBoxProfileFilter;
 
 	@FXML
-	private Button buttonResetProfileFilter;
+	private ComboBox<String> comboBoxLevelFilter;
+
+	@FXML
+	private TextField txtSearchLogs;
+
+	@FXML
+	private Button btnClearSearch;
 
 	@FXML
 	private TableView<LogMessageAux> tableviewLogMessages;
@@ -98,7 +105,7 @@ public class ConsoleLogLayoutController implements IProfileDataChangeListener {
 			{
 				setGraphic(text);
 				text.wrappingWidthProperty().bind(widthProperty());
-				text.fillProperty().bind(textFillProperty()); // Inherit text color
+				text.fillProperty().bind(textFillProperty());
 				setPrefHeight(USE_COMPUTED_SIZE);
 			}
 			@Override
@@ -159,9 +166,10 @@ public class ConsoleLogLayoutController implements IProfileDataChangeListener {
         });
 		
 		tableviewLogMessages.setItems(filteredLogMessages);
-
-		// Botón para agregar datos (simula nuevos mensajes)
 		tableviewLogMessages.setPlaceholder(new Label("NO LOGS"));
+
+		// Initialize level filter
+		initializeLevelFilter();
 		
 		// Initialize profile filter
 		initializeProfileFilter();
@@ -179,22 +187,19 @@ public class ConsoleLogLayoutController implements IProfileDataChangeListener {
 	}
 
 	@FXML
-	void handleButtonResetProfileFilter(ActionEvent event) {
-		comboBoxProfileFilter.getSelectionModel().selectFirst(); // Select "All profiles"
-		updateLogFilter();
+	void handleClearSearch(ActionEvent event) {
+		if (txtSearchLogs != null) {
+			txtSearchLogs.clear();
+		}
 	}
 	
 	@FXML
 	void handleButtonOpenLogFolder(ActionEvent event) {
 		try {
-			// Path to logs folder - application logs are stored in the "log" directory
 			File logsDir = new File("log");
 			if (!logsDir.exists()) {
-				// Create logs directory if it doesn't exist
 				logsDir.mkdirs();
 			}
-			
-			// Open the logs directory
 			Desktop.getDesktop().open(logsDir);
 		} catch (IOException e) {
 			System.err.println("Error opening logs folder: " + e.getMessage());
@@ -202,8 +207,15 @@ public class ConsoleLogLayoutController implements IProfileDataChangeListener {
 		}
 	}
 
+	private void initializeLevelFilter() {
+		ObservableList<String> levels = FXCollections.observableArrayList(
+				"All levels", "INFO", "DEBUG", "WARNING", "ERROR"
+		);
+		comboBoxLevelFilter.setItems(levels);
+		comboBoxLevelFilter.getSelectionModel().selectFirst();
+	}
+
 	private void initializeProfileFilter() {
-		// Load available profiles
 		try {
 			List<DTOProfiles> profiles = ServProfiles.getServices().getProfiles();
 			if (profiles != null) {
@@ -212,7 +224,6 @@ public class ConsoleLogLayoutController implements IProfileDataChangeListener {
 				profiles.forEach(profile -> profileNames.add(profile.getName()));
 				comboBoxProfileFilter.setItems(profileNames);
 
-				// Keep the current selection if it's still valid, otherwise select "All profiles"
 				String currentSelection = comboBoxProfileFilter.getSelectionModel().getSelectedItem();
 				if (currentSelection != null && profileNames.contains(currentSelection)) {
 					comboBoxProfileFilter.getSelectionModel().select(currentSelection);
@@ -226,14 +237,30 @@ public class ConsoleLogLayoutController implements IProfileDataChangeListener {
 	}
 
 	private void setupFilterListeners() {
-		// Listen for profile filter changes
-		comboBoxProfileFilter.valueProperty().addListener((obs, oldVal, newVal) -> {
-			updateLogFilter();
-		});
+		comboBoxProfileFilter.valueProperty().addListener((obs, oldVal, newVal) -> updateLogFilter());
+		comboBoxLevelFilter.valueProperty().addListener((obs, oldVal, newVal) -> updateLogFilter());
+		if (txtSearchLogs != null) {
+			txtSearchLogs.textProperty().addListener((obs, oldVal, newVal) -> updateLogFilter());
+		}
 	}
 
 	private void updateLogFilter() {
 		filteredLogMessages.setPredicate(logMessage -> {
+			// Search text filter
+			if (txtSearchLogs != null) {
+				String search = txtSearchLogs.getText();
+				if (search != null && !search.isEmpty()) {
+					String lSearch = search.toLowerCase();
+					String msg = logMessage.messageProperty().get();
+					String task = logMessage.taskProperty().get();
+					String profile = logMessage.profileProperty().get();
+					boolean matchesSearch = (msg != null && msg.toLowerCase().contains(lSearch))
+							|| (task != null && task.toLowerCase().contains(lSearch))
+							|| (profile != null && profile.toLowerCase().contains(lSearch));
+					if (!matchesSearch) return false;
+				}
+			}
+
 			// Profile filter
 			String selectedProfile = comboBoxProfileFilter.getValue();
 			if (selectedProfile != null && !selectedProfile.isEmpty() && !"All profiles".equals(selectedProfile)) {
@@ -242,13 +269,22 @@ public class ConsoleLogLayoutController implements IProfileDataChangeListener {
 					return false;
 				}
 			}
-			
+
+			// Level filter
+			String selectedLevel = comboBoxLevelFilter.getValue();
+			if (selectedLevel != null && !selectedLevel.isEmpty() && !"All levels".equals(selectedLevel)) {
+				String msgLevel = logMessage.severityProperty().get();
+				if (msgLevel == null || !msgLevel.equalsIgnoreCase(selectedLevel)) {
+					return false;
+				}
+			}
+
 			return true;
 		});
 	}
 
 	public void appendMessage(DTOLogMessage dtoMessage) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
 		String formattedDate = LocalDateTime.now().format(formatter);
 
 		if (!checkboxDebug.isSelected() && dtoMessage.getSeverity() == EnumTpMessageSeverity.DEBUG) {

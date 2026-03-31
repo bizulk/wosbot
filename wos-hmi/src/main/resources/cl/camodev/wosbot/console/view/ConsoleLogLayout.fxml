@@ -7,29 +7,52 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-      spacing="0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+      spacing="6" style="-fx-padding: 8 16 16 16;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <children>
+
+      <!-- Top Search + Filter Bar -->
+      <HBox alignment="CENTER_LEFT" spacing="12" styleClass="control-top-bar">
+         <children>
+            <!-- Search Field -->
+            <HBox alignment="CENTER_LEFT" spacing="0" HBox.hgrow="ALWAYS" styleClass="log-search-wrapper">
+               <children>
+                  <FontIcon iconLiteral="mdi2m-magnify" iconSize="16" iconColor="#636a75" />
+                  <TextField fx:id="txtSearchLogs" promptText="Search logs..."
+                             HBox.hgrow="ALWAYS" styleClass="control-search-field" />
+                  <Button fx:id="btnClearSearch" text="✕" onAction="#handleClearSearch"
+                          styleClass="search-clear-btn" />
+               </children>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Profile Filter -->
+            <ComboBox fx:id="comboBoxProfileFilter" prefWidth="150" styleClass="control-filter-combo" />
+
+            <!-- Level Filter -->
+            <ComboBox fx:id="comboBoxLevelFilter" prefWidth="120" styleClass="control-filter-combo" />
+         </children>
+      </HBox>
 
       <!-- Log Table -->
       <TableView fx:id="tableviewLogMessages" VBox.vgrow="ALWAYS"
                  maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
         <columns>
-          <TableColumn fx:id="columnTimeStamp" editable="false" maxWidth="140.0" minWidth="140.0"
-                       prefWidth="140.0" resizable="false" sortable="false" text="TIMESTAMP" />
+          <TableColumn fx:id="columnTimeStamp" editable="false" maxWidth="160.0" minWidth="160.0"
+                       prefWidth="160.0" resizable="false" sortable="false" text="TIMESTAMP (UTC)" />
           <TableColumn fx:id="columnLevel" editable="false" maxWidth="70.0" minWidth="70.0"
                        prefWidth="70.0" sortable="false" text="LEVEL" />
           <TableColumn fx:id="columnMessage" editable="false" maxWidth="1.7976931348623157E308"
                        prefWidth="196.0" sortable="false" text="MESSAGE" />
-          <TableColumn fx:id="columnProfile" editable="false" maxWidth="90.0" minWidth="90.0"
-                       prefWidth="90.0" sortable="false" text="PROFILE" />
+          <TableColumn fx:id="columnProfile" editable="false" maxWidth="110.0" minWidth="110.0"
+                       prefWidth="110.0" sortable="false" text="PROFILE" />
           <TableColumn fx:id="columnTask" editable="false" maxWidth="140.0" minWidth="140.0"
                        prefWidth="140.0" sortable="false" text="TASK" />
         </columns>
@@ -38,24 +61,22 @@
         </columnResizePolicy>
       </TableView>
 
-      <!-- Toolbar -->
-      <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-padding: 12 16;">
+      <!-- Bottom Toolbar -->
+      <HBox alignment="CENTER_LEFT" spacing="12" styleClass="control-bottom-bar">
          <children>
+            <!-- DEBUG checkbox stays bottom-left -->
             <CheckBox fx:id="checkboxDebug" mnemonicParsing="false" text="DEBUG" />
-            
-            <!-- Filters -->
-            <Label text="Filter by:" style="-fx-text-fill: #9eaab6;" />
-            <ComboBox fx:id="comboBoxProfileFilter" prefWidth="140.0" />
-            <Button fx:id="buttonResetProfileFilter" mnemonicParsing="false"
-                    onAction="#handleButtonResetProfileFilter" text="Reset" />
 
             <Region HBox.hgrow="ALWAYS" />
-            
+
+            <!-- Action Buttons -->
             <HBox spacing="8">
                 <Button fx:id="buttonOpenLogFolder" mnemonicParsing="false"
-                        onAction="#handleButtonOpenLogFolder" text="Open Logs Folder" styleClass="action-button-logs" />
+                        onAction="#handleButtonOpenLogFolder" text="Open Logs Folder"
+                        styleClass="action-button-logs" />
                 <Button fx:id="buttonClearLogs" mnemonicParsing="false"
-                        onAction="#handleButtonClearLogs" text="Clear Logs" styleClass="action-button-clear" />
+                        onAction="#handleButtonClearLogs" text="Clear Logs"
+                        styleClass="action-button-clear" />
             </HBox>
          </children>
       </HBox>

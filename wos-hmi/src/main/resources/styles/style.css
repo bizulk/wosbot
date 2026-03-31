@@ -87,9 +87,9 @@
     -fx-background-color: -wos-bg-sidebar;
     -fx-border-color: transparent -wos-border-subtle transparent transparent;
     -fx-border-width: 0 1 0 0;
-    -fx-min-width: 220;
-    -fx-pref-width: 220;
-    -fx-max-width: 220;
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-max-width: 190;
 }
 
 .nav-sidebar .scroll-pane {
@@ -109,16 +109,20 @@
 }
 
 .sidebar-divider {
+    -fx-padding: 0 16;
+}
+
+.sidebar-divider .line {
     -fx-border-color: -wos-border-subtle;
-    -fx-border-width: 0.5 0 0 0;
-    -fx-opacity: 0.5;
+    -fx-border-width: 1 0 0 0;
+    -fx-border-style: solid;
 }
 
 /* ---------------------------------------------------------------------------
  * NAVIGATION ITEM (Pill shape, yellow active)
  * --------------------------------------------------------------------------- */
 .nav-button-container {
-    -fx-padding: 16 16 16 16;
+    -fx-padding: 12 10 12 10;
 }
 
 .nav-button {
@@ -127,15 +131,15 @@
     -fx-border-radius: 6;
     -fx-border-width: 1;
     -fx-background-radius: 6;
-    -fx-padding: 10 14;
+    -fx-padding: 9 10;
     -fx-cursor: hand;
     -fx-text-fill: #b4b9c1;
-    -fx-font-size: 13px;
+    -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-alignment: CENTER_LEFT;
     -fx-max-width: 1.7976931348623157E308;
     -fx-content-display: LEFT;
-    -fx-graphic-text-gap: 12;
+    -fx-graphic-text-gap: 10;
 }
 
 .nav-button .label {
@@ -211,11 +215,11 @@
     -fx-background-color: -wos-yellow;
     -fx-text-fill: -wos-text-dark;
     -fx-font-weight: bold;
-    -fx-font-size: 14px;
-    -fx-padding: 0 20 0 20;
-    -fx-min-height: 38;
-    -fx-max-height: 38;
-    -fx-pref-height: 38;
+    -fx-font-size: 13px;
+    -fx-padding: 0 16 0 16;
+    -fx-min-height: 32;
+    -fx-max-height: 32;
+    -fx-pref-height: 32;
 }
 
 .action-button-start:hover {
@@ -234,11 +238,11 @@
     -fx-text-fill: -wos-yellow;
     /* It seems text is slight light yellow on dark */
     -fx-font-weight: bold;
-    -fx-font-size: 14px;
-    -fx-padding: 0 16 0 16;
-    -fx-min-height: 38;
-    -fx-max-height: 38;
-    -fx-pref-height: 38;
+    -fx-font-size: 13px;
+    -fx-padding: 0 12 0 12;
+    -fx-min-height: 32;
+    -fx-max-height: 32;
+    -fx-pref-height: 32;
 }
 
 .action-button-pause:hover {
@@ -271,7 +275,7 @@
     -fx-background-color: -wos-blue;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-padding: 8 16;
+    -fx-padding: 6 12;
 }
 
 .action-button-logs:hover {
@@ -282,7 +286,7 @@
     -fx-background-color: -wos-red;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-padding: 8 16;
+    -fx-padding: 6 12;
 }
 
 .action-button-clear:hover {
@@ -340,33 +344,31 @@
 }
 
 /* ---------------------------------------------------------------------------
- * TABLES — Solid Yellow Headers, Alternating Dense Rows
+ * TABLE VIEWS
  * --------------------------------------------------------------------------- */
 .table-view {
-    -fx-background-color: -wos-bg-app;
-    -fx-border-color: -wos-border-subtle;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-table-cell-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-border-color: #262934;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-border-width: 1;
     -fx-padding: 0;
 }
 
 .table-view .column-header-background {
-    -fx-background-color: -wos-yellow;
-    -fx-background-radius: 6 6 0 0;
+    -fx-background-color: #ffcd53;
+    -fx-padding: 0;
 }
 
-.table-view .column-header-background .filler {
-    -fx-background-color: -wos-yellow;
-}
-
-.table-view .column-header {
+.table-view .column-header,
+.table-view .filler {
     -fx-background-color: transparent;
-    -fx-padding: 10 8;
+    -fx-border-color: transparent;
+    -fx-padding: 10 16;
 }
 
 .table-view .column-header .label {
-    -fx-text-fill: -wos-text-dark;
+    -fx-text-fill: #1a1c24;
     -fx-font-weight: bold;
     -fx-font-size: 11px;
 }
@@ -449,9 +451,9 @@
     -fx-font-weight: bold;
 }
 
-.tab-pane>.tab-content-area {
+.tab-pane > .tab-content-area {
     -fx-background-color: -wos-bg-app;
-    -fx-padding: 16 0 0 0;
+    -fx-padding: 0;
 }
 
 /* ---------------------------------------------------------------------------
@@ -563,12 +565,12 @@
 }
 
 .scroll-bar .thumb {
-    -fx-background-color: #2e3444; /* Higher contrast thumb */
+    -fx-background-color: #3D3C45; /* Clean tab/sidebar thumb color */
     -fx-background-radius: 8;
 }
 
 .scroll-bar .thumb:hover {
-    -fx-background-color: #3b4255;
+    -fx-background-color: #4b4a55;
 }
 
 .scroll-bar .increment-button,
@@ -633,8 +635,8 @@
  * QUICK NAV OVERLAY (Windows 10 Start Menu Style)
  * --------------------------------------------------------------------------- */
 .quick-nav-overlay {
-    -fx-background-color: #0c0e14F0;
-    -fx-background: #0c0e14F0;
+    -fx-background-color: #0c0e14E6; /* Slightly more transparent to show blur cleanly */
+    -fx-background: transparent;
 }
 
 .quick-nav-overlay .viewport {
@@ -646,26 +648,26 @@
 }
 
 .quick-nav-card {
-    -fx-background-color: #1a1f2a;
-    -fx-border-color: #242936;
+    -fx-background-color: #1a1e27;
+    -fx-border-color: #262a36;
     -fx-border-width: 1;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 8, 0, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 6, 0, 0, 2);
+    -fx-transition: -fx-background-color 0.2s, -fx-border-color 0.2s;
 }
 
 .quick-nav-card:hover {
-    -fx-background-color: #1e2430;
-    -fx-border-color: #fcd176;
-    -fx-scale-x: 1.04;
-    -fx-scale-y: 1.04;
-    -fx-effect: dropshadow(gaussian, rgba(252, 209, 118, 0.2), 16, 0, 0, 0);
+    -fx-background-color: #212632;
+    -fx-border-color: #434c60;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0, 0, 4);
+    /* Removed scaling and yellow glow for a cleaner, professional feel */
 }
 
 .quick-nav-card-icon {
-    -fx-icon-color: #636a75;
-    -fx-icon-size: 28;
+    -fx-icon-color: #a0a6b2;
+    -fx-icon-size: 24;
 }
 
 .quick-nav-card:hover .quick-nav-card-icon {
@@ -673,10 +675,10 @@
 }
 
 .quick-nav-card-label {
-    -fx-text-fill: #b4b9c1;
-    -fx-font-size: 12px;
+    -fx-text-fill: #e6edf3;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-alignment: CENTER;
+    -fx-alignment: CENTER_LEFT;
 }
 
 .quick-nav-card:hover .quick-nav-card-label {
@@ -744,4 +746,208 @@
 .search-result-row:hover {
     -fx-background-color: #262934;
     /* subtle hover */
+}
+
+/* ---------------------------------------------------------------------------
+ * CONTROL TAB — Shared Search/Filter Bar Styles
+ * --------------------------------------------------------------------------- */
+
+/* Top bar shared across Logs, Profiles, Tasks tabs */
+.control-top-bar {
+    -fx-background-color: -wos-bg-card;
+    -fx-border-color: -wos-border-subtle;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-border-width: 1;
+    -fx-padding: 6 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 12;
+    -fx-min-height: 44;
+    -fx-max-height: 44;
+}
+
+/* Bottom bar shared across Logs, Profiles, Tasks tabs */
+.control-bottom-bar {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 8;
+    -fx-min-height: 40;
+}
+
+/* Wrapper that groups search field + clear-X button side by side */
+.log-search-wrapper {
+    -fx-background-color: #12141a;
+    -fx-border-color: #262934;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-border-width: 1;
+    -fx-padding: 0 4 0 12;
+    -fx-max-width: 420;
+    -fx-min-width: 250;
+}
+
+.log-search-wrapper:focused-within {
+    -fx-border-color: #388bfd;
+}
+
+/* Search text field inside the wrapper — no own border */
+.control-search-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: -wos-text-primary;
+    -fx-prompt-text-fill: -wos-text-secondary;
+    -fx-padding: 8 8 8 8;
+    -fx-background-radius: 6 0 0 6;
+    -fx-border-radius: 0;
+}
+
+.control-search-field:focused {
+    -fx-border-color: transparent;
+}
+
+/* ✕ clear button inside the search wrapper */
+.search-clear-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: -wos-text-secondary;
+    -fx-font-size: 11px;
+    -fx-padding: 4 10;
+    -fx-cursor: hand;
+    -fx-background-radius: 0 6 6 0;
+    -fx-border-radius: 0;
+}
+
+.search-clear-btn:hover {
+    -fx-text-fill: -wos-text-primary;
+    -fx-background-color: rgba(255,255,255,0.06);
+}
+
+/* Filter/sort combo boxes in control bars */
+.control-filter-combo {
+    -fx-background-color: #0c0e12;
+    -fx-border-color: #1e2430;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-border-width: 1;
+    -fx-text-fill: -wos-text-primary;
+    -fx-cursor: hand;
+    -fx-padding: 4 8;
+}
+
+.control-filter-combo:focused {
+    -fx-border-color: -wos-yellow;
+}
+
+.control-filter-combo .list-cell {
+    -fx-text-fill: -wos-text-primary;
+    -fx-font-size: 12px;
+}
+
+.control-filter-combo .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.control-filter-combo .arrow {
+    -fx-background-color: -wos-text-secondary;
+}
+
+/* Gear button for column visibility */
+.column-settings-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: #1e2430;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-border-width: 1;
+    -fx-padding: 6 8;
+    -fx-cursor: hand;
+    -fx-min-width: 34;
+    -fx-min-height: 34;
+}
+
+.column-settings-btn:hover {
+    -fx-border-color: #3b4255;
+    -fx-background-color: rgba(255,255,255,0.04);
+}
+
+.column-settings-btn:hover .ikonli-font-icon {
+    -fx-icon-color: -wos-yellow;
+}
+
+/* Timeline / Table View toggle button — blue matching Target */
+.action-button-timeline {
+    -fx-background-color: #388bfd;
+    -fx-background-radius: 6;
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 6 12;
+    -fx-cursor: hand;
+}
+
+.action-button-timeline:hover {
+    -fx-background-color: #4893fb;
+}
+
+.action-button-timeline:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Bulk Update button */
+.action-button-bulk {
+    -fx-background-color: #388bfd;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 6 12;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.action-button-bulk:hover {
+    -fx-background-color: #58a6ff;
+}
+
+/* Add Profile button */
+.action-button-add-profile {
+    -fx-background-color: #f3c467;
+    -fx-text-fill: #0c0e12;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 6 12;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.action-button-add-profile:hover {
+    -fx-background-color: #ffce54;
+}
+
+/* Horizontal tab pane inside tasks - no top padding since bar is already there */
+.horizontal-tab-pane > .tab-header-area {
+    -fx-padding: 0 0 0 16;
+}
+
+.horizontal-tab-pane > .tab-content-area {
+    -fx-padding: 0;
+}
+
+/* Icon-only action buttons for table rows */
+.action-icon-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 4;
+    -fx-cursor: hand;
+}
+
+.action-icon-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-background-radius: 4;
+}
+
+.action-icon-button:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
 }

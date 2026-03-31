@@ -997,6 +997,26 @@ public class LauncherLayoutController implements IProfileLoadListener, IStaminaC
                 navSearchField.clear();
             }
         });
+
+        Platform.runLater(() -> {
+            if (navSearchField.getScene() != null) {
+                navSearchField.getScene().addEventFilter(javafx.scene.input.KeyEvent.KEY_TYPED, event -> {
+                    if (event.isControlDown() || event.isAltDown() || event.isMetaDown()) return;
+                    String character = event.getCharacter();
+                    if (character.isEmpty()) return;
+                    char c = character.charAt(0);
+                    if (Character.isISOControl(c)) return;
+
+                    Node focusOwner = navSearchField.getScene().getFocusOwner();
+                    if (focusOwner instanceof TextInputControl) return;
+
+                    navSearchField.requestFocus();
+                    navSearchField.appendText(character);
+                    navSearchField.positionCaret(navSearchField.getText().length());
+                    event.consume();
+                });
+            }
+        });
     }
 
     private void showSearchResults(String query) {
@@ -1196,8 +1216,8 @@ public class LauncherLayoutController implements IProfileLoadListener, IStaminaC
 
         int columns = 4;
         GridPane grid = new GridPane();
-        grid.setHgap(24);
-        grid.setVgap(24);
+        grid.setHgap(16);
+        grid.setVgap(16);
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(16));
 
@@ -1227,7 +1247,7 @@ public class LauncherLayoutController implements IProfileLoadListener, IStaminaC
 
         VBox overlayContent = new VBox(32);
         overlayContent.setAlignment(Pos.TOP_CENTER);
-        overlayContent.setPadding(new Insets(60, 40, 60, 40));
+        overlayContent.setPadding(new Insets(40, 40, 40, 40));
         overlayContent.setMaxWidth(1100);
         overlayContent.getChildren().addAll(headingBox, grid);
 
@@ -1261,17 +1281,17 @@ public class LauncherLayoutController implements IProfileLoadListener, IStaminaC
 
     private HBox createQuickNavCard(QuickNavEntry entry, int index) {
         FontIcon cardIcon = new FontIcon(entry.icon());
-        cardIcon.setIconSize(20);
+        cardIcon.setIconSize(24);
         cardIcon.getStyleClass().add("quick-nav-card-icon");
 
         Label cardLabel = new Label(entry.title());
         cardLabel.getStyleClass().add("quick-nav-card-label");
         cardLabel.setAlignment(Pos.CENTER_LEFT);
 
-        HBox card = new HBox(12);
-        card.setAlignment(Pos.CENTER);
-        card.setMinHeight(80);
-        card.setPadding(new Insets(16, 20, 16, 20));
+        HBox card = new HBox(16);
+        card.setAlignment(Pos.CENTER_LEFT);
+        card.setMinHeight(70);
+        card.setPadding(new Insets(16, 24, 16, 24));
         card.getStyleClass().add("quick-nav-card");
         GridPane.setHgrow(card, Priority.ALWAYS);
 

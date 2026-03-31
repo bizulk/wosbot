@@ -3,10 +3,40 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.layout.VBox?>
 
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-      spacing="0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+      spacing="6" style="-fx-padding: 8 16 16 16;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <children>
+
+      <!-- Top Search + Sort Bar -->
+      <HBox alignment="CENTER_LEFT" spacing="12" styleClass="control-top-bar">
+         <children>
+            <!-- Search Field -->
+            <HBox alignment="CENTER_LEFT" spacing="0" HBox.hgrow="ALWAYS" styleClass="log-search-wrapper">
+               <children>
+                  <FontIcon iconLiteral="mdi2m-magnify" iconSize="16" iconColor="#636a75" />
+                  <TextField fx:id="txtSearchProfiles" promptText="Search profiles..."
+                             HBox.hgrow="ALWAYS" styleClass="control-search-field" />
+                  <Button fx:id="btnClearSearch" onAction="#handleClearSearch" styleClass="search-clear-btn" text="✕" />
+               </children>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Sort By -->
+            <Label text="Sort by:" textFill="#636a75" />
+            <ComboBox fx:id="comboBoxSortBy" prefWidth="150" promptText="Name" styleClass="control-filter-combo" />
+
+            <!-- Settings Button (column visibility) -->
+            <Button fx:id="btnColumnSettings" onAction="#handleColumnSettings" styleClass="column-settings-btn">
+               <graphic>
+                  <FontIcon iconLiteral="mdi2c-cog" iconSize="18" iconColor="#636a75" />
+               </graphic>
+            </Button>
+         </children>
+      </HBox>
 
       <!-- Profile Table -->
       <TableView fx:id="tableviewLogMessages" VBox.vgrow="ALWAYS"
@@ -17,27 +47,40 @@
          <columns>
             <TableColumn fx:id="columnEnabled" maxWidth="90.0" minWidth="90.0"
                          prefWidth="90.0" resizable="false" text="ENABLED" style="-fx-alignment: CENTER;" />
-            <TableColumn fx:id="columnEmulatorNumber" maxWidth="40.0" minWidth="40.0"
-                         prefWidth="40.0" resizable="false" text="ID" style="-fx-alignment: CENTER;" />
+            <TableColumn fx:id="columnEmulatorNumber" maxWidth="80.0" minWidth="80.0"
+                         prefWidth="80.0" resizable="false" text="EMULATOR" style="-fx-alignment: CENTER;" />
+            <TableColumn fx:id="columnFurnaceLevel" maxWidth="120.0" minWidth="120.0"
+                         prefWidth="120.0" resizable="false" text="FURNACE LEVEL" style="-fx-alignment: CENTER;" />
             <TableColumn fx:id="columnProfileName" maxWidth="1.7976931348623157E308"
-                         prefWidth="204.0" text="NAME" style="-fx-alignment: CENTER;" />
+                         prefWidth="200.0" text="NAME" style="-fx-alignment: CENTER;" />
             <TableColumn fx:id="columnPriority" maxWidth="90.0" minWidth="90.0"
                          prefWidth="90.0" resizable="false" text="PRIORITY" style="-fx-alignment: CENTER;" />
             <TableColumn fx:id="columnStatus" maxWidth="200.0" minWidth="200.0"
                          prefWidth="200.0" resizable="false" text="STATUS" style="-fx-alignment: CENTER;" />
+            <TableColumn fx:id="columnStamina" maxWidth="90.0" minWidth="90.0"
+                         prefWidth="90.0" resizable="false" text="STAMINA" style="-fx-alignment: CENTER;" />
             <TableColumn fx:id="columnDelete" maxWidth="140.0" minWidth="140.0"
                          prefWidth="140.0" resizable="false" text="ACTIONS" style="-fx-alignment: CENTER;" />
          </columns>
       </TableView>
 
-      <!-- Toolbar -->
-      <HBox alignment="CENTER_RIGHT" spacing="8" style="-fx-padding: 10 12;">
+      <!-- Bottom Toolbar -->
+      <HBox alignment="CENTER_RIGHT" spacing="12" styleClass="control-bottom-bar">
          <children>
-            <Region HBox.hgrow="ALWAYS" />
             <Button fx:id="btnBulkUpdate" mnemonicParsing="false"
-                    onAction="#handleButtonBulkUpdateProfiles" text="Bulk Update" />
+                    onAction="#handleButtonBulkUpdateProfiles" text="Bulk Update"
+                    styleClass="action-button-bulk">
+               <graphic>
+                   <FontIcon iconLiteral="mdi2f-file-restore" iconSize="16" iconColor="white" />
+               </graphic>
+            </Button>
             <Button fx:id="btnAddProfile" mnemonicParsing="false"
-                    onAction="#handleButtonAddProfile" text="Add Profile" />
+                    onAction="#handleButtonAddProfile" text="Add Profile"
+                    styleClass="action-button-add-profile">
+               <graphic>
+                   <FontIcon iconLiteral="mdi2p-plus" iconSize="16" iconColor="black" />
+               </graphic>
+            </Button>
          </children>
       </HBox>
 
