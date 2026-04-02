@@ -3,12 +3,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="550.0"
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
       HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS"
       xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER"
-                    maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
+                   
                     styleClass="task-page-scroll" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
             <content>
                 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"

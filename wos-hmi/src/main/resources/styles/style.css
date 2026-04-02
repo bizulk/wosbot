@@ -601,28 +601,8 @@
 
 /* ---------------------------------------------------------------------------
  * CUSTOM CARDS AND HEADERS FOR TASK PAGES
+ * See .content-card defined above in ELEVATION & BASICS section.
  * --------------------------------------------------------------------------- */
-.content-card {
-    -fx-background-color: -wos-bg-card;
-    -fx-background-radius: 6;
-    -fx-border-color: #2a2e38;
-    -fx-border-radius: 6;
-    -fx-border-width: 1;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* ---------------------------------------------------------------------------
  * TASK PAGE LAYOUT UTILITIES

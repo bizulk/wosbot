@@ -3,27 +3,27 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox styleClass="giftcode-root" stylesheets="@giftcode.css" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="550.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<VBox stylesheets="@giftcode.css" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="task-page-scroll" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
             <content>
-                <VBox spacing="14" style="-fx-padding: 18;" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                <VBox styleClass="task-page-root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                     <children>
                         <!-- Gift Codes Card -->
-                        <VBox spacing="0" styleClass="giftcode-card">
+                        <VBox styleClass="content-card">
                             <children>
                                 <!-- Header -->
-                                <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" styleClass="giftcode-card-header">
+                                <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" styleClass="header-red">
                                     <children>
                                         <Label text="Gift Codes" />
                                     </children>
                                 </HBox>
                                 <!-- Body -->
-                                <VBox spacing="12" styleClass="giftcode-card-body">
+                                <VBox styleClass="task-section-inner">
                                     <children>
-                                        <Label styleClass="giftcode-description" text="Fetch the latest available gift codes from the server. Click the copy button next to any code to copy it to your clipboard." wrapText="true" />
+                                        <Label styleClass="task-card-description" text="Fetch the latest available gift codes from the server. Click the copy button next to any code to copy it to your clipboard." wrapText="true" />
 
-                                        <Separator styleClass="giftcode-separator" />
+                                        <Separator style="-fx-opacity: 0.25;" />
 
                                         <!-- Controls row -->
                                         <HBox spacing="10" alignment="CENTER_LEFT">
@@ -35,7 +35,7 @@
                                             </children>
                                         </HBox>
 
-                                        <Separator styleClass="giftcode-separator" />
+                                        <Separator style="-fx-opacity: 0.25;" />
 
                                         <!-- Gift code list container -->
                                         <VBox fx:id="giftcodeListContainer" spacing="6" VBox.vgrow="ALWAYS">

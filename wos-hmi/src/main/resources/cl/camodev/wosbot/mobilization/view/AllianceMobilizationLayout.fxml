@@ -15,145 +15,116 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="550.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="task-page-scroll" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
             <content>
-                <GridPane hgap="20" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="550.0" prefWidth="720.0">
-                    <padding>
-                        <Insets bottom="18" left="18" right="18" top="18" />
-                    </padding>
-                    <columnConstraints>
-                        <ColumnConstraints percentWidth="70" />
-                        <ColumnConstraints percentWidth="30" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints vgrow="ALWAYS" />
-                    </rowConstraints>
-    <children>
-    <VBox spacing="14" style="-fx-background-color: #11141A; -fx-background-radius: 8; -fx-padding: 18;" GridPane.columnIndex="0" GridPane.rowIndex="0">
-            <children>
-        <CheckBox fx:id="checkBoxAllianceMobilization" mnemonicParsing="false" style="-fx-font-size: 15px; -fx-font-weight: bold;" text="Enable Alliance Mobilization" />
-
-        <Label style="-fx-font-size: 12px; -fx-text-fill: #b5b5b5;" text="Configure which missions the bot should accept or refresh." wrapText="true" />
-
-                <Separator />
-
-                <VBox spacing="0" style="-fx-background-color: #242424; -fx-background-radius: 8;">
+                <VBox styleClass="task-page-root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                     <children>
-                        <Label maxWidth="1.7976931348623157E308" style="-fx-background-color: linear-gradient(#5cad5c, #2e6b2e); -fx-background-radius: 8 8 0 0; -fx-padding: 8 12; -fx-font-weight: bold; -fx-text-fill: #1c1c1c;" text="Rewards" />
-                        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 12 16 16 16;">
+                        <!-- Alliance Mobilization Card -->
+                        <VBox styleClass="content-card">
                             <children>
-                                <Label style="-fx-text-fill: #e5e5e5;" text="Bonus preference" />
-                                <ComboBox fx:id="rewardsPercentageCombo" prefWidth="140.0" value="Any">
-                                    <items>
-                                        <FXCollections fx:factory="observableArrayList">
-                                            <String fx:value="Any" />
-                                            <String fx:value="120%" />
-                                            <String fx:value="200%" />
-                                        </FXCollections>
-                                    </items>
-                                </ComboBox>
-                            </children>
-                        </HBox>
-                    </children>
-                </VBox>
-
-                <VBox spacing="0" style="-fx-background-color: #242424; -fx-background-radius: 8;">
-                    <children>
-                        <Label maxWidth="1.7976931348623157E308" style="-fx-background-color: linear-gradient(#ffb347, #ff7a18); -fx-background-radius: 8 8 0 0; -fx-padding: 8 12; -fx-font-weight: bold; -fx-text-fill: #1c1c1c;" text="Task types" />
-                        <GridPane hgap="16" maxWidth="1.7976931348623157E308" style="-fx-padding: 12 16 16 16;" vgap="8">
-                            <columnConstraints>
-                                <ColumnConstraints percentWidth="50" />
-                                <ColumnConstraints percentWidth="50" />
-                        <ColumnConstraints minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-                        <ColumnConstraints minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-                            </columnConstraints>
-                            <children>
-                                <CheckBox fx:id="buildSpeedupsCheck" mnemonicParsing="false" text="Build Speedups" GridPane.rowIndex="2" />
-                                <CheckBox fx:id="buyPackageCheck" mnemonicParsing="false" text="Buy Package" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-
-                                <CheckBox fx:id="chiefGearCharmCheck" mnemonicParsing="false" text="Chief Charm" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                                <CheckBox fx:id="chiefGearScoreCheck" mnemonicParsing="false" text="Chief Gear Score" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-
-                                <CheckBox fx:id="defeatBeastsCheck" mnemonicParsing="false" text="Defeat Beasts" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                <CheckBox fx:id="fireCrystalCheck" mnemonicParsing="false" text="Fire Crystal" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-
-                                <CheckBox fx:id="gatherResourcesCheck" mnemonicParsing="false" text="Gather Resources" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                                <CheckBox fx:id="heroGearStoneCheck" mnemonicParsing="false" text="Hero Gear Stone" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-
-                                <CheckBox fx:id="mythicShardCheck" mnemonicParsing="false" text="Mythic Shard" GridPane.columnIndex="2" />
-                                <CheckBox fx:id="rallyCheck" mnemonicParsing="false" text="Rally" GridPane.columnIndex="3" />
-
-                                <CheckBox fx:id="trainTroopsCheck" mnemonicParsing="false" selected="true" text="Train Troops" />
-                                <CheckBox fx:id="trainingSpeedupsCheck" mnemonicParsing="false" text="Training Speedups" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-
-                                <CheckBox fx:id="useGemsCheck" mnemonicParsing="false" text="Use Gems" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                <CheckBox fx:id="useSpeedupsCheck" mnemonicParsing="false" text="Use Speedups" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                            </children>
-                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                     </rowConstraints>
-                        </GridPane>
-                    </children>
-                </VBox>
-
-                <Separator />
-
-                <VBox spacing="0" style="-fx-background-color: #242424; -fx-background-radius: 8;">
-                    <children>
-                        <Label maxWidth="1.7976931348623157E308" style="-fx-background-color: linear-gradient(#f6b93b, #e67e22); -fx-background-radius: 8 8 0 0; -fx-padding: 8 12; -fx-font-weight: bold; -fx-text-fill: #1c1c1c;" text="Automation" />
-                        <HBox alignment="CENTER_LEFT" spacing="24" style="-fx-padding: 12 16 16 16;">
-                            <children>
-                                <VBox spacing="6">
+                                <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" styleClass="header-green">
                                     <children>
-                                        <Label style="-fx-text-fill: #e5e5e5;" text="Min points (200%)" />
-                                        <TextField fx:id="minimumPoints200Field" prefWidth="90.0" text="520" />
+                                        <CheckBox fx:id="checkBoxAllianceMobilization" mnemonicParsing="false" text="Enable Alliance Mobilization" />
+                                    </children>
+                                </HBox>
+                                <VBox styleClass="task-section-inner">
+                                    <children>
+                                        <Label styleClass="task-card-description" text="Configure which missions the bot should accept or refresh." wrapText="true" />
+                                        <Separator style="-fx-opacity: 0.25;" />
+
+                                        <!-- Rewards Sub-section -->
+                                        <VBox styleClass="task-subsection">
+                                            <children>
+                                                <Label styleClass="task-subsection-title" text="Rewards" />
+                                                <HBox alignment="CENTER_LEFT" spacing="10">
+                                                    <children>
+                                                        <Label styleClass="task-field-label" text="Bonus preference" />
+                                                        <ComboBox fx:id="rewardsPercentageCombo" prefWidth="140.0" value="Any">
+                                                            <items>
+                                                                <FXCollections fx:factory="observableArrayList">
+                                                                    <String fx:value="Any" />
+                                                                    <String fx:value="120%" />
+                                                                    <String fx:value="200%" />
+                                                                </FXCollections>
+                                                            </items>
+                                                        </ComboBox>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+
+                                        <!-- Task Types Sub-section -->
+                                        <VBox styleClass="task-subsection">
+                                            <children>
+                                                <Label styleClass="task-subsection-title" text="Task Types" />
+                                                <GridPane hgap="16" maxWidth="1.7976931348623157E308" vgap="8">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints percentWidth="33" />
+                                                        <ColumnConstraints percentWidth="33" />
+                                                        <ColumnConstraints percentWidth="34" />
+                                                    </columnConstraints>
+                                                    <rowConstraints>
+                                                        <RowConstraints /><RowConstraints /><RowConstraints /><RowConstraints /><RowConstraints />
+                                                    </rowConstraints>
+                                                    <children>
+                                                        <CheckBox fx:id="trainTroopsCheck" mnemonicParsing="false" text="Train Troops" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                                        <CheckBox fx:id="buyPackageCheck" mnemonicParsing="false" text="Buy Package" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                                        <CheckBox fx:id="mythicShardCheck" mnemonicParsing="false" text="Mythic Shard" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                                                        <CheckBox fx:id="chiefGearCharmCheck" mnemonicParsing="false" text="Chief Charm" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                                        <CheckBox fx:id="chiefGearScoreCheck" mnemonicParsing="false" text="Chief Gear Score" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                        <CheckBox fx:id="defeatBeastsCheck" mnemonicParsing="false" text="Defeat Beasts" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                        <CheckBox fx:id="buildSpeedupsCheck" mnemonicParsing="false" text="Build Speedups" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                                        <CheckBox fx:id="fireCrystalCheck" mnemonicParsing="false" text="Fire Crystal" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                        <CheckBox fx:id="useGemsCheck" mnemonicParsing="false" text="Use Gems" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                        <CheckBox fx:id="gatherResourcesCheck" mnemonicParsing="false" text="Gather Resources" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                                        <CheckBox fx:id="heroGearStoneCheck" mnemonicParsing="false" text="Hero Gear Stone" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                        <CheckBox fx:id="trainingSpeedupsCheck" mnemonicParsing="false" text="Training Speedups" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                        <CheckBox fx:id="rallyCheck" mnemonicParsing="false" text="Rally" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                                        <CheckBox fx:id="useSpeedupsCheck" mnemonicParsing="false" text="Use Speedups" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                    </children>
+                                                </GridPane>
+                                            </children>
+                                        </VBox>
+
+                                        <!-- Automation Sub-section -->
+                                        <VBox styleClass="task-subsection">
+                                            <children>
+                                                <Label styleClass="task-subsection-title" text="Automation" />
+                                                <HBox alignment="CENTER_LEFT" spacing="24">
+                                                    <children>
+                                                        <VBox spacing="6">
+                                                            <children>
+                                                                <Label styleClass="task-field-label" text="Min points (200%)" />
+                                                                <TextField fx:id="minimumPoints200Field" prefWidth="90.0" text="520" />
+                                                            </children>
+                                                        </VBox>
+                                                        <VBox spacing="6">
+                                                            <children>
+                                                                <Label styleClass="task-field-label" text="Min points (120%)" />
+                                                                <TextField fx:id="minimumPoints120Field" prefWidth="90.0" text="400" />
+                                                            </children>
+                                                        </VBox>
+                                                        <VBox spacing="8">
+                                                            <children>
+                                                                <CheckBox fx:id="autoAcceptCheck" mnemonicParsing="false" text="Auto accept" />
+                                                                <CheckBox fx:id="useGemsBottomCheck" disable="true" mnemonicParsing="false" text="Use Gems" />
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+
+                                        <Label styleClass="task-card-note" text="Quick Guide: Enable the task, select allowed task types, configure your minimum point thresholds. The bot will automatically refresh tasks below your threshold." wrapText="true" />
+
                                     </children>
                                 </VBox>
-                        <VBox spacing="6">
-                           <children>
-      
-                                        <Label style="-fx-text-fill: #e5e5e5;" text="Min points (120%)" />
-                                        <TextField fx:id="minimumPoints120Field" prefWidth="90.0" text="400" />
-                           </children>
+                            </children>
                         </VBox>
-                                <VBox spacing="8">
-                                    <children>
-                                        <CheckBox fx:id="autoAcceptCheck" mnemonicParsing="false" style="-fx-text-fill: #e5e5e5;" text="Auto accept" />
-                                        <CheckBox fx:id="useGemsBottomCheck" disable="true" mnemonicParsing="false" style="-fx-text-fill: #e5e5e5;" text="Use Gems" />
-                                    </children>
-                                </VBox>
-                            </children>
-                        </HBox>
                     </children>
                 </VBox>
-            </children>
-        </VBox>
-
-        <VBox alignment="TOP_LEFT" spacing="8" style="-fx-background-color: #262626; -fx-background-radius: 8; -fx-padding: 16;" GridPane.columnIndex="1" GridPane.rowIndex="0">
-            <children>
-
-                <Label style="-fx-font-size: 12px; -fx-text-fill: linear-gradient(#ffcf66, #ff571aff); -fx-font-weight: bold;" text="Rudimentary beta - behaviour may change in upcoming releases" wrapText="true" />
-                <Label text="" />
-                <Label style="-fx-font-weight: bold; -fx-font-size: 11px; -fx-text-fill: #f2f2f2;" text="Quick guide" />
-                <Separator style="-fx-background-color: #d79300ff; -fx-opacity: 1;" />
-                <Label style="-fx-font-size: 10px; -fx-text-fill: #d0d0d0;" text="• Enable Alliance Mobilization to activate the task." wrapText="true" />
-                <Label style="-fx-font-size: 10px; -fx-text-fill: #d0d0d0;" text="• Select the bonus percentages the bot should consider." wrapText="true" />
-                <Label style="-fx-font-size: 10px; -fx-text-fill: #d0d0d0;" text="• Check the task types you want to allow." wrapText="true" />
-                <Label style="-fx-font-size: 10px; -fx-text-fill: #d0d0d0;" text="• Minimum points below the threshold trigger a refresh." wrapText="true" />
-                <Label style="-fx-font-size: 10px; -fx-text-fill: #d0d0d0;" text="• Auto accept will immediately take matching tasks." wrapText="true" />
-                <Separator style="-fx-background-color: #d79300ff; -fx-opacity: 1;" />
-            </children>
-        </VBox>
-    </children>
-        </GridPane>
             </content>
         </ScrollPane>
     </children>
