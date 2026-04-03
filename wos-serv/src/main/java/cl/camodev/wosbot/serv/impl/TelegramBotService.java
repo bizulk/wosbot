@@ -824,7 +824,7 @@ public class TelegramBotService implements IBotStateListener {
                     String type = parts[1];
                     String path = "log/bot.log";
                     if ("clean".equals(type)) {
-                        path = "wos-hmi/target/log/CleanBot.log";
+                        path = "log/CleanBot.log";
                     }
                     sendDocument(chatId, path);
                 }
